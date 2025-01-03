@@ -89,6 +89,14 @@
               
             </ul>
           </li>
+          <li class="borderbox">
+            <a class="nav-link text-white" @click="toggleMenu('menu9')" href="#">사원관리</a>
+            <ul class="menu" v-show="isMenuVisible('menu9')"> <!-- 대메뉴2 하위 메뉴 보이기 -->
+              <li><NuxtLink to="/hr/employees/">사원관리</NuxtLink></li>
+              <li><NuxtLink to="/hr/leave/">연차관리</NuxtLink></li>
+              
+            </ul>
+          </li>
           <li v-if="isAdmin" class="borderbox">
             <a class="nav-link text-white" @click="toggleMenu('menu10')" href="#">ADMIN</a>
             <ul class="menu" v-show="isMenuVisible('menu10')"> <!-- 대메뉴2 하위 메뉴 보이기 -->

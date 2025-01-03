@@ -407,23 +407,35 @@ export const getLeaveBalance = async (employeeId: string) => {
   };
   
   // 연차 잔여일수 업데이트
-  export const updateLeaveBalance = async (employeeId: string, usedDays: number) => {
+  export const updateLeaveBalance = async (
+    employeeId: string,
+    daysCount: number
+  ): Promise<void> => {
     try {
       console.log('[Model] 연차 잔여일수 업데이트 쿼리 시작');
       const query = `
-        UPDATE LEAVE_BALANCE
+        UPDATE LEAVE_BALANCE lb,
+               (SELECT EMPLOYEE_ID, USED_DAYS + ? as new_used_days 
+                FROM LEAVE_BALANCE 
+                WHERE EMPLOYEE_ID = ?) calc
         SET 
-          USED_DAYS = USED_DAYS + ?,
-          REMAINING_DAYS = TOTAL_DAYS - (USED_DAYS + ?),
-          LAST_UPDATED = CURRENT_DATE
-        WHERE EMPLOYEE_ID = ?
-        AND YEAR = YEAR(CURRENT_DATE())
+            lb.USED_DAYS = calc.new_used_days,
+            lb.REMAINING_DAYS = lb.TOTAL_DAYS - calc.new_used_days,
+            lb.LAST_UPDATED = CURRENT_DATE
+        WHERE lb.EMPLOYEE_ID = ?
+        AND lb.YEAR = YEAR(CURRENT_DATE())
       `;
   
       console.log('[Model] 실행 쿼리:', query);
-      console.log('[Model] 쿼리 파라미터:', [usedDays, usedDays, employeeId]);
+      const params = [daysCount, employeeId, employeeId];
+      console.log('[Model] 쿼리 파라미터:', params);
   
-      await sql({ query, values: [usedDays, usedDays, employeeId] });
+      await sql({
+        query,
+        values: params,
+      });
+  
+      console.log('[Model] 연차 잔여일수 업데이트 완료');
     } catch (error) {
       console.error('[Model] 연차 잔여일수 업데이트 쿼리 오류:', error);
       throw error;
