@@ -1,0 +1,133 @@
+<template>
+  <div class="w-full max-w-3xl mx-auto py-8">
+    <div class="d-flex flex-wrap flex-column">
+      <h5 class="text-center mt-4">Barcode Printer</h5>
+      <!-- barcodes{{ barcodes }}
+      barcodes{{ barcodeData }}
+  processCode{{ processCode }} -->
+      <!-- <button class="btn btn-sm btn-success" @click="printBarcodes">Print Barcodes</button> -->
+      <hr />
+      <div class="container barcode-printer">
+        <button class="btn btn-sm btn-outline-warning" @click="printBarcodes">
+          바코드 프린터
+        </button>
+        
+      </div>
+      <div class="container d-flex flex-wrap mt-4 barcode-position">
+        <div
+          class="barcode-container barcode-item  "
+          v-for="(barcode, index) in barcodes"
+          :key="index"
+        >
+        <!--  -->
+       <div class="ms-2 ">
+        <div class="d-flex flex-row mt-1 justify-content-between ">
+               <div class="d-flex flex-column mt-1">
+                  <span class=" align-items-center" style="font-size: 6px">ALKOSC</span>
+                  <span class="mt-2" style="font-size: 0.5em">{{ carName }}</span>
+                </div>
+                <div class="text-center p-0 mt-2 ms-2">
+                  <qrcode-vue class="position-a" :value="barcode" :size="25" level="H" />                  
+                </div>
+                <div class="d-flex flex-column mt-1 ms-2">
+                  <span style="font-size: 7px">{{ productName }}</span>
+                  <span class="mt-2" style="font-size: 7px">{{ location }}</span>
+                </div>
+            
+           
+                <!-- <div class="d-flex justify-content-between">
+                    <span class="mx-2 position-b align-items-center border-bottom " style="font-size: 5px;font-style: bold;">{{ barcode }}</span>                       
+                 </div> -->
+        </div>
+          
+       </div>
+         <!--  -->
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import { ref } from "vue";
+import QrcodeVue from "qrcode.vue";
+import { useRoute } from "vue-router";
+
+const route = useRoute();
+const barcodes = ref(
+  route.query.barcodes ? route.query.barcodes.split(",") : [],
+);
+const barcodeData = ref(route.query.barcodeData);
+const lastSerialNumber = ref(route.query.lastSerialNumber);
+const productName = ref(route.query.productName);
+const location = ref(route.query.location);
+const carName = ref(route.query.carName);
+
+const printBarcodes = async () => {
+  await fetch(`/api/products/${barcodeData.value}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ lastSerialNumber: lastSerialNumber.value }),
+  });
+  window.print();
+};
+</script>
+
+<style>
+.barcode-printer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.barcode-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+}
+
+.barcode-item {
+  width: 40mm;
+  height: 20mm;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1mm;
+  border: 1px solid #ccc;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  .barcode-container,
+  .barcode-container * {
+    visibility: visible;
+  }
+
+  .barcode-item {
+    margin-bottom: 0;
+    border: none;
+  }
+ .barcode-position{
+   position: relative;
+   top: -20px;
+   left: -40px;
+   font-style: bold;
+   margin-top: 2px;
+ }
+  .position-a{
+  
+  }
+  .position-b{
+    position: relative;
+    top: 37px;
+    left: -72px;
+    font-style: bold;
+  }
+}
+</style>

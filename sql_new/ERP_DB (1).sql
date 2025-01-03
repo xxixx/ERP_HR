@@ -1,0 +1,327 @@
+-
+
+CREATE TABLE `ACCOUNT` (
+  `NO` int(11) NOT NULL,
+  `ID` varchar(11) NOT NULL,
+  `NAME` varchar(30) NOT NULL,
+  `PASSWORD` varchar(30) DEFAULT NULL,
+  `CREATE_DATE` date NOT NULL DEFAULT current_timestamp(),
+  `ACCOUNT_STATE` int(11) NOT NULL DEFAULT 1 COMMENT '사용자 상태',
+  `LEVEL` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 테이블의 덤프 데이터 `ACCOUNT`
+--
+
+INSERT INTO `ACCOUNT` (`NO`, `ID`, `NAME`, `PASSWORD`, `CREATE_DATE`, `ACCOUNT_STATE`, `LEVEL`) VALUES
+(1, 'ADMIN', 'ADMIN', NULL, '2024-05-14', 1, 10);
+
+-- --------------------------------------------------------
+
+--
+-- 테이블 구조 `ASSY_PART`
+--
+
+CREATE TABLE `ASSY_PART` (
+  `ID` int(11) NOT NULL,
+  `ASSY_PART_NAME` varchar(30) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 테이블의 덤프 데이터 `ASSY_PART`
+--
+
+INSERT INTO `ASSY_PART` (`ID`, `ASSY_PART_NAME`) VALUES
+(2, 'CAB'),
+(3, 'CENTER'),
+(1, 'DAB'),
+(4, 'KAB'),
+(6, 'PAB'),
+(5, 'SAB');
+
+-- --------------------------------------------------------
+
+--
+-- 테이블 구조 `ASSY_SUB_PART`
+--
+
+CREATE TABLE `ASSY_SUB_PART` (
+  `ID` int(11) NOT NULL,
+  `ASSY_SUB_NAME` varchar(30) NOT NULL,
+  `CUSIN_NO` varchar(30) NOT NULL,
+  `FOLDING_NO` varchar(30) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 테이블의 덤프 데이터 `ASSY_SUB_PART`
+--
+
+INSERT INTO `ASSY_SUB_PART` (`ID`, `ASSY_SUB_NAME`, `CUSIN_NO`, `FOLDING_NO`) VALUES
+(1, 'TDCV', 'AAA', NULL),
+(2, 'EU', 'AAA', NULL),
+(3, 'VN', 'BBB', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- 테이블 구조 `CAR`
+--
+
+CREATE TABLE `CAR` (
+  `ID` int(10) NOT NULL,
+  `CAR_NAME` varchar(30) NOT NULL,
+  `CAR_DESCRIPTION` varchar(30) DEFAULT NULL,
+  `CAR_CODE` varchar(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 테이블의 덤프 데이터 `CAR`
+--
+
+INSERT INTO `CAR` (`ID`, `CAR_NAME`, `CAR_DESCRIPTION`, `CAR_CODE`) VALUES
+(1, 'TDCV', NULL, NULL),
+(2, 'VF33', NULL, NULL),
+(3, '34', NULL, NULL),
+(4, 'VF35', NULL, NULL),
+(5, 'VF36', NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- 테이블 구조 `JAEDAN_PART`
+--
+
+CREATE TABLE `JAEDAN_PART` (
+  `ID` int(10) NOT NULL,
+  `JAEDAN_PART_NAME` varchar(30) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 테이블의 덤프 데이터 `JAEDAN_PART`
+--
+
+INSERT INTO `JAEDAN_PART` (`ID`, `JAEDAN_PART_NAME`) VALUES
+(5, 'CAB TAP'),
+(4, 'CAB 인어백'),
+(6, 'CENTER 메인'),
+(7, 'CENTER 테더'),
+(3, 'DAB FRONT'),
+(2, 'DAB REAR'),
+(8, 'KAB 메인'),
+(9, 'KAB 테더'),
+(1, 'LD LAB'),
+(13, 'PAB SR'),
+(14, 'PABAB 메인'),
+(10, 'SAB LH 메인'),
+(12, 'SAB LH 태더'),
+(11, 'SAB RH 메인');
+
+-- --------------------------------------------------------
+
+--
+-- 테이블 구조 `WONDAN`
+--
+
+CREATE TABLE `WONDAN` (
+  `ID` int(10) NOT NULL,
+  `WONDAN_NAME` varchar(30) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 테이블의 덤프 데이터 `WONDAN`
+--
+
+INSERT INTO `WONDAN` (`ID`, `WONDAN_NAME`) VALUES
+(6, 'SR4K'),
+(2, 'SRH2'),
+(3, 'SRLT'),
+(1, 'UC49'),
+(5, 'UC53'),
+(7, 'UCNK'),
+(4, 'UCTA');
+
+-- --------------------------------------------------------
+
+--
+-- 테이블 구조 `WORKING_ORDER`
+--
+
+CREATE TABLE `WORKING_ORDER` (
+  `ORDER_NO` int(30) NOT NULL,
+  `WORKING_PART` int(11) NOT NULL,
+  `WORKING_ID` int(11) NOT NULL,
+  `CREATE_DATA` text NOT NULL DEFAULT current_timestamp(),
+  `STATE` int(11) NOT NULL DEFAULT 1,
+  `ORDER_ACCOUNT` varchar(30) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- 테이블 구조 `WORKING_PART`
+--
+
+CREATE TABLE `WORKING_PART` (
+  `ID` int(10) NOT NULL,
+  `ASSY_PART_NAME` varchar(30) NOT NULL,
+  `ASSY_SUB_PART_NAME` varchar(30) NOT NULL,
+  `C_PUMBUN` varchar(30) DEFAULT NULL,
+  `F_PUMBUN` varchar(30) DEFAULT NULL,
+  `JAEDAN_PART_NAME` varchar(30) NOT NULL,
+  `WONDAN_NAME` varchar(30) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 테이블의 덤프 데이터 `WORKING_PART`
+--
+
+INSERT INTO `WORKING_PART` (`ID`, `ASSY_PART_NAME`, `ASSY_SUB_PART_NAME`, `C_PUMBUN`, `F_PUMBUN`, `JAEDAN_PART_NAME`, `WONDAN_NAME`) VALUES
+(1, 'DAB', 'TDCV', NULL, NULL, 'LD LAB', 'UC49'),
+(2, 'DAB', 'VN', NULL, NULL, 'DAB REAR', 'UC49'),
+(3, 'DAB', 'VN', NULL, NULL, 'DAB FRONT', 'UC49'),
+(4, 'DAB', 'EU', NULL, NULL, 'DAB FRONT', 'SRH2'),
+(5, 'DAB', 'EU', NULL, NULL, 'DAB REAR', 'UC49'),
+(6, 'CAB', 'EU', NULL, NULL, 'CAB 인어백', 'SRLT'),
+(7, 'CAB', 'EU', NULL, NULL, 'CAB TAP', 'UCTA'),
+(8, 'CENTER', 'EU', NULL, NULL, 'CENTER 메인', 'SRH2'),
+(9, 'CENTER', 'EU', NULL, NULL, 'CENTER 테더', 'UC53'),
+(10, 'KAB', 'EU', NULL, NULL, 'KAB 메인', 'SRH2'),
+(11, 'KAB', 'EU', NULL, NULL, 'KAB 테더', 'UC49'),
+(12, 'SAB', 'EU', NULL, NULL, 'SAB LH 메인', 'SRH2'),
+(13, 'SAB', 'EU', NULL, NULL, 'SAB RH 메인', 'UC53'),
+(14, 'SAB', 'EU', NULL, NULL, 'SAB LH 태더', 'UC53'),
+(15, 'PAB', 'EU', NULL, NULL, 'PABAB 메인', 'UCNK'),
+(16, 'PAB', 'EU', NULL, NULL, 'PAB SR', 'SR4K');
+
+--
+-- 덤프된 테이블의 인덱스
+--
+
+--
+-- 테이블의 인덱스 `ACCOUNT`
+--
+ALTER TABLE `ACCOUNT`
+  ADD PRIMARY KEY (`NO`),
+  ADD UNIQUE KEY `ACCOUNT_ID` (`ID`);
+
+--
+-- 테이블의 인덱스 `ASSY_PART`
+--
+ALTER TABLE `ASSY_PART`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `ASSY_PART_NAME` (`ASSY_PART_NAME`);
+
+--
+-- 테이블의 인덱스 `ASSY_SUB_PART`
+--
+ALTER TABLE `ASSY_SUB_PART`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `ASY_SUB_NAME` (`ASSY_SUB_NAME`),
+  ADD KEY `FOLDING_NO` (`FOLDING_NO`) USING BTREE,
+  ADD KEY `CUSIN_NO` (`CUSIN_NO`);
+
+--
+-- 테이블의 인덱스 `CAR`
+--
+ALTER TABLE `CAR`
+  ADD PRIMARY KEY (`ID`);
+
+--
+-- 테이블의 인덱스 `JAEDAN_PART`
+--
+ALTER TABLE `JAEDAN_PART`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `JAEDAN` (`JAEDAN_PART_NAME`) USING BTREE;
+
+--
+-- 테이블의 인덱스 `WONDAN`
+--
+ALTER TABLE `WONDAN`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `WONDAN_NAME` (`WONDAN_NAME`);
+
+--
+-- 테이블의 인덱스 `WORKING_ORDER`
+--
+ALTER TABLE `WORKING_ORDER`
+  ADD PRIMARY KEY (`ORDER_NO`);
+
+--
+-- 테이블의 인덱스 `WORKING_PART`
+--
+ALTER TABLE `WORKING_PART`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `FK_ASSY_PART_NAME` (`ASSY_PART_NAME`),
+  ADD KEY `FK_ASSY_SUB_PART_NAME` (`ASSY_SUB_PART_NAME`),
+  ADD KEY `FK_ASSY_C_PUMBUN` (`C_PUMBUN`),
+  ADD KEY `FK_ASSY_F_PUMBUN` (`F_PUMBUN`),
+  ADD KEY `FK_JAEDAN_PART_NAME` (`JAEDAN_PART_NAME`),
+  ADD KEY `FK_WONDAN_NAME` (`WONDAN_NAME`);
+
+--
+-- 덤프된 테이블의 AUTO_INCREMENT
+--
+
+--
+-- 테이블의 AUTO_INCREMENT `ACCOUNT`
+--
+ALTER TABLE `ACCOUNT`
+  MODIFY `NO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- 테이블의 AUTO_INCREMENT `ASSY_PART`
+--
+ALTER TABLE `ASSY_PART`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- 테이블의 AUTO_INCREMENT `ASSY_SUB_PART`
+--
+ALTER TABLE `ASSY_SUB_PART`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+
+--
+-- 테이블의 AUTO_INCREMENT `CAR`
+--
+ALTER TABLE `CAR`
+  MODIFY `ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- 테이블의 AUTO_INCREMENT `JAEDAN_PART`
+--
+ALTER TABLE `JAEDAN_PART`
+  MODIFY `ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+
+--
+-- 테이블의 AUTO_INCREMENT `WONDAN`
+--
+ALTER TABLE `WONDAN`
+  MODIFY `ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- 테이블의 AUTO_INCREMENT `WORKING_ORDER`
+--
+ALTER TABLE `WORKING_ORDER`
+  MODIFY `ORDER_NO` int(30) NOT NULL AUTO_INCREMENT;
+
+--
+-- 테이블의 AUTO_INCREMENT `WORKING_PART`
+--
+ALTER TABLE `WORKING_PART`
+  MODIFY `ID` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+
+--
+-- 덤프된 테이블의 제약사항
+--
+
+--
+-- 테이블의 제약사항 `WORKING_PART`
+--
+ALTER TABLE `WORKING_PART`
+  ADD CONSTRAINT `FK_ASSY_C_PUMBUN` FOREIGN KEY (`C_PUMBUN`) REFERENCES `ASSY_SUB_PART` (`CUSIN_NO`),
+  ADD CONSTRAINT `FK_ASSY_F_PUMBUN` FOREIGN KEY (`F_PUMBUN`) REFERENCES `ASSY_SUB_PART` (`FOLDING_NO`),
+  ADD CONSTRAINT `FK_ASSY_PART_NAME` FOREIGN KEY (`ASSY_PART_NAME`) REFERENCES `ASSY_PART` (`ASSY_PART_NAME`),
+  ADD CONSTRAINT `FK_ASSY_SUB_PART_NAME` FOREIGN KEY (`ASSY_SUB_PART_NAME`) REFERENCES `ASSY_SUB_PART` (`ASSY_SUB_NAME`),
+  ADD CONSTRAINT `FK_JAEDAN_PART_NAME` FOREIGN KEY (`JAEDAN_PART_NAME`) REFERENCES `JAEDAN_PART` (`JAEDAN_PART_NAME`),
+  ADD CONSTRAINT `FK_WONDAN_NAME` FOREIGN KEY (`WONDAN_NAME`) REFERENCES `WONDAN` (`WONDAN_NAME`);

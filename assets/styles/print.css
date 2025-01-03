@@ -1,0 +1,30 @@
+@media print {
+    /* 인쇄 스타일 정의 */
+    body {
+      margin: 100px;
+      padding: 0;
+    }
+    .modal-content {
+      width: 210mm; /* A4 용지 가로 크기 */
+      height: 297mm; /* A4 용지 세로 크기 */
+      margin: 0 auto;
+      padding: 10mm; /* 여백 설정 */
+      box-sizing: border-box;
+      background-color: yellow;
+    }
+    .container{background-color: blue;}
+    /* 인쇄 시 숨김 */
+    .modal-header {
+      display: none;
+    }
+    .modal-footer {
+      display: none;
+    }
+    .print-hide {
+      display: none;
+    }
+    /* 인쇄 시 표시 */
+    .print-only {
+      display: block;
+    }
+  }

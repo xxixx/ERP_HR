@@ -1,0 +1,154 @@
+세션스토리지에 저장된 사용자 정보를 가져오는 방법
+
+store /user.js
+import { defineStore } from 'pinia'
+
+export const useUserStore = defineStore('user', {
+  state: () => ({
+    userInfo: null,
+    isAuthenticated: false
+  }),
+  
+  getters: {
+    getUserInfo: (state) => state.userInfo,
+    getUsername: (state) => state.userInfo?.NAME,
+    getUserRole: (state) => state.userInfo?.ROLE,
+    getUserLevel: (state) => state.userInfo?.LEVEL
+  },
+  
+  actions: {
+    setUserInfo(user) {
+      this.userInfo = user
+      this.isAuthenticated = true
+      // sessionStorage에 저장
+      if (process.client) {
+        sessionStorage.setItem('userInfo', JSON.stringify(user))
+      }
+    },
+    
+    clearUserInfo() {
+      this.userInfo = null
+      this.isAuthenticated = false
+      if (process.client) {
+        sessionStorage.removeItem('userInfo')
+      }
+    },
+
+    checkAuth() {
+      if (process.client) {
+        const storedUser = sessionStorage.getItem('userInfo')
+        if (storedUser) {
+          this.userInfo = JSON.parse(storedUser)
+          this.isAuthenticated = true
+        }
+      }
+    }
+  }
+})
+
+
+
+plugins/auth.js 파일을 다음과 같이 수정합니다:
+
+import { defineNuxtPlugin } from '#app'
+import { useUserStore } from '~/store/user'
+
+export default defineNuxtPlugin(() => {
+  const userStore = useUserStore()
+
+  // 페이지 로드 시 세션 스토리지에서 사용자 정보 복구
+  if (process.client) {
+    const storedUser = sessionStorage.getItem('userInfo')
+    if (storedUser) {
+      userStore.setUserInfo(JSON.parse(storedUser))
+    }
+  }
+})
+
+
+login.vue
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useUserStore } from '~/store/user'
+
+const EMAIL = ref('')
+const PASSWORD = ref('')
+const rememberMe = ref(false)
+const showPassword = ref(false)
+const error = ref('')
+const isLoading = ref(false)
+const router = useRouter()
+const userStore = useUserStore()
+
+const login = async () => {
+  isLoading.value = true
+  try {
+    const response = await $fetch('/api/account/login', {
+      method: 'POST',
+      body: { EMAIL: EMAIL.value, PASSWORD: PASSWORD.value },
+    })
+    
+    if (response.success) {
+      // store에 사용자 정보 저장
+      userStore.setUserInfo(response.user)
+      if (rememberMe.value) {
+        localStorage.setItem('EMAIL', EMAIL.value)
+      } else {
+        localStorage.removeItem('EMAIL')
+      }
+      router.push('/')
+    } else {
+      error.value = response.message
+    }
+  } catch (err) {
+    console.error('로그인 중 오류 발생:', err)
+    error.value = '로그인 중 오류가 발생했습니다.'
+  } finally {
+    isLoading.value = false
+  }
+}
+
+
+/server/controller/account.js
+export const loginUser = async (EMAIL, PASSWORD) => {
+  const user = await accountModel.findUser(EMAIL);
+
+  if (user) {
+    const isPasswordValid = await bcrypt.compare(PASSWORD, user.PASSWORD);
+    if (isPasswordValid) {
+      return { 
+        success: true, 
+        message: '로그인 성공',
+        user: {
+          NAME: user.NAME,
+          ROLE: user.ROLE,
+          LEVEL: user.LEVEL
+        }
+      };
+    }
+  }
+  return { success: false, message: '사용자 이름 또는 비밀번호가 잘못되었습니다.' };
+};
+
+/plugins/auth.js 파일을 다음과 같이 수정합니다:
+import { defineNuxtPlugin } from '#app'
+import { useUserStore } from '~/store/user'
+
+export default defineNuxtPlugin(() => {
+  const userStore = useUserStore()
+
+  // 페이지 로드 시 세션 스토리지에서 사용자 정보 복구
+  if (process.client) {
+    const storedUser = sessionStorage.getItem('userInfo')
+    if (storedUser) {
+      userStore.setUserInfo(JSON.parse(storedUser))
+    }
+  }
+})
+
+/plugins/auth.js 은 영향을 미치지 않는 것 같다.
+plugins/auth.js가 없어도 사용자 이름이 가져와지는 이유는 layouts/default.vue에서 이미 동일한 기능을 수행하고 있기 때문입니다.
+현재 두 곳에서 비슷한 기능을 중복 구현하고 있습니다:
+plugins/auth.js:
+2. layouts/default.vue:
+layouts/default.vue의 onMounted 훅에서 userStore.checkAuth()를 호출하여 세션 스토리지에서 사용자 정보를 확인하고 있기 때문에, plugins/auth.js는 불필요한 중복 코드가 됩니다.

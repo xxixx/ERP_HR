@@ -1,0 +1,1324 @@
+-- phpMyAdmin SQL Dump
+-- version 5.2.1
+-- https://www.phpmyadmin.net/
+--
+-- Host: localhost
+-- 생성 시간: 24-11-09 23:27
+-- 서버 버전: 10.3.32-MariaDB
+-- PHP 버전: 8.0.23
+
+SET FOREIGN_KEY_CHECKS=0;
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- 데이터베이스: `ALKO_ERP`
+--
+CREATE DATABASE IF NOT EXISTS `ALKO_ERP` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+USE `ALKO_ERP`;
+
+-- --------------------------------------------------------
+
+--
+-- 테이블 구조 `ACCOUNT`
+--
+
+DROP TABLE IF EXISTS `ACCOUNT`;
+CREATE TABLE `ACCOUNT` (
+  `NO` int(10) NOT NULL,
+  `EMAIL` varchar(30) NOT NULL,
+  `NAME` varchar(30) NOT NULL,
+  `PASSWORD` varchar(100) DEFAULT NULL,
+  `ROLE` varchar(20) NOT NULL DEFAULT '사원',
+  `POSITION` varchar(20) NOT NULL DEFAULT '사원',
+  `CREATE_DATE` date NOT NULL DEFAULT current_timestamp(),
+  `ACCOUNT_STATE` int(11) NOT NULL DEFAULT 1 COMMENT '사용자 상태',
+  `LEVEL` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 테이블의 덤프 데이터 `ACCOUNT`
+--
+
+INSERT INTO `ACCOUNT` (`NO`, `EMAIL`, `NAME`, `PASSWORD`, `ROLE`, `POSITION`, `CREATE_DATE`, `ACCOUNT_STATE`, `LEVEL`) VALUES
+(1, 'admin@email.com', 'admin', '1', 'admin', 'admin', '2024-08-18', 1, 100),
+(2, 'tera@email.com', 'tera', '1', 'admin', 'admin', '2024-08-18', 1, 100),
+(10, 'nam93054321@daum.net', '남진규', '1', '공정관리', '공정관리', '2024-10-10', 1, 5),
+(32, '8391785@daum.net', '이종록', '1', '출하관리', '부장', '2024-10-21', 1, 5),
+(50, 'qntksrudeh@naver.com', '김종렬', '1234', '재단', '사원', '2024-11-01', 1, 5),
+(51, 'kjr@email.com', '김종렬', '1234', '재단', '사원', '2024-11-05', 1, 5);
+
+-- --------------------------------------------------------
+
+--
+-- 테이블 구조 `BARCODE_COUNT`
+--
+
+DROP TABLE IF EXISTS `BARCODE_COUNT`;
+CREATE TABLE `BARCODE_COUNT` (
+  `NO` int(11) NOT NULL,
+  `PROCESS_CODE` varchar(30) NOT NULL,
+  `PRODUCT_CODE` varchar(30) DEFAULT NULL,
+  `PRODUCT_CODE_REV` varchar(2) DEFAULT NULL,
+  `LAST_SERIAL_NUMBER` int(10) DEFAULT NULL,
+  `BARCODE_COUNT` varchar(10) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 테이블의 덤프 데이터 `BARCODE_COUNT`
+--
+
+INSERT INTO `BARCODE_COUNT` (`NO`, `PROCESS_CODE`, `PRODUCT_CODE`, `PRODUCT_CODE_REV`, `LAST_SERIAL_NUMBER`, `BARCODE_COUNT`) VALUES
+(26, 'KABL230000K2024101370', 'KABL230050C%2000241013', NULL, 4, '0'),
+(45, 'KABL230000K2024101370', 'KABL230050C%2000241014', NULL, 2, '0'),
+(47, 'KABL230000K2024101370', 'KABL230050C%2000241017', NULL, 3, '0'),
+(49, 'KACL230090K2024102514', 'KACL230090K%2000241029', NULL, 71, '0');
+
+-- --------------------------------------------------------
+
+--
+-- 테이블 구조 `BOX`
+--
+
+DROP TABLE IF EXISTS `BOX`;
+CREATE TABLE `BOX` (
+  `NO` int(11) NOT NULL,
+  `PROCESSCODE` varchar(50) DEFAULT NULL,
+  `LOT` varchar(30) DEFAULT NULL,
+  `BOX_NO` int(11) DEFAULT NULL,
+  `BARCODE_COUNT` int(10) DEFAULT 0,
+  `CREATE_DATE` timestamp NOT NULL DEFAULT current_timestamp(),
+  `OUT_DATE` date DEFAULT NULL,
+  `STATE` int(10) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- 테이블 구조 `CHAR_DIM`
+--
+
+DROP TABLE IF EXISTS `CHAR_DIM`;
+CREATE TABLE `CHAR_DIM` (
+  `NO` int(11) NOT NULL,
+  `Venthole_size` varchar(50) DEFAULT NULL,
+  `Venthole_sewing1` varchar(50) DEFAULT NULL,
+  `Venthole_sewing2` varchar(50) DEFAULT NULL,
+  `Assy_Size1` varchar(50) DEFAULT NULL,
+  `Assy_Size2` varchar(50) DEFAULT NULL,
+  `Assy_Size3` varchar(50) DEFAULT NULL,
+  `Permete_Selvage` varchar(50) DEFAULT NULL,
+  `Stitch_lock` varchar(50) DEFAULT NULL,
+  `Stitch_Chain` varchar(50) DEFAULT NULL,
+  `Tether_Reinforce` varchar(50) DEFAULT NULL,
+  `Inflator_Hole01` varchar(50) DEFAULT NULL,
+  `Inflator_Hole02` varchar(50) DEFAULT NULL,
+  `ThemBent` varchar(50) DEFAULT NULL,
+  `Attatch_sewing` varchar(50) DEFAULT NULL,
+  `Characteristic_Dim` varchar(200) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 테이블의 덤프 데이터 `CHAR_DIM`
+--
+
+INSERT INTO `CHAR_DIM` (`NO`, `Venthole_size`, `Venthole_sewing1`, `Venthole_sewing2`, `Assy_Size1`, `Assy_Size2`, `Assy_Size3`, `Permete_Selvage`, `Stitch_lock`, `Stitch_Chain`, `Tether_Reinforce`, `Inflator_Hole01`, `Inflator_Hole02`, `ThemBent`, `Attatch_sewing`, `Characteristic_Dim`) VALUES
+(1, NULL, NULL, NULL, '(110)mm', '(120)mm', '(55)mm', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(3, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(4, '20±1mm', '60±3mm', NULL, '(110)mm', '(120)mm', '(55)mm', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(5, '30±1mm', '60±3mm', NULL, '(110)mm', '(120)mm', '(55)mm', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(6, '20±1mm', '60±3mm', NULL, '(120)mm', '(120)mm', '(50)mm', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(7, '55±1mm', '80±2mm', '100±2mm', 'MAX(105)mm', 'MAX(210)mm', 'MAX(90)mm', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(8, NULL, NULL, NULL, 'Max 105mm', 'Max 210mm', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(9, '45±1mm', '75±2mm', '95±2mm', 'Max 105mm', 'Max 210mm', 'Max 90mm', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(10, NULL, NULL, NULL, NULL, NULL, NULL, '20±5mm', '10±1/25.4mm', '10-1+3/25.4mm', NULL, NULL, NULL, NULL, NULL, 'IP Reinforce Selvag 15±3mm ,Tether Sewing Min15mm, Mouth Sewing 70±3mm, Mouth Sewing 70±3mm'),
+(11, NULL, NULL, NULL, NULL, NULL, NULL, '20±5mm', '9±1/25.4mm', '10+3-1/25.4mm', '10±3mm', 'Ø20±mm', 'Ø30±mm', '70±5mm', '10±3mm', NULL),
+(12, NULL, NULL, NULL, NULL, NULL, NULL, '20±5mm', '9±1/25.4mm', '10+3-1/25.4mm', '10±3mm', 'Ø20±mm', 'Ø30±mm', '75±5mm', '10±3mm', NULL),
+(13, NULL, NULL, NULL, NULL, NULL, NULL, '20±5mm', '9±1/25.4mm', '10+3-1/25.4mm', '10±3mm', 'Ø20±mm', 'Ø30±mm', '70±5mm', '10±3mm', NULL),
+(14, NULL, NULL, NULL, NULL, NULL, NULL, '20±5mm', '9±1/25.4mm', '10+3-1/25.4mm', '10±3mm', 'Ø20±mm', 'Ø30±mm', '75±5mm', '10±3mm', NULL),
+(15, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '10±1/25.4mm', NULL, NULL, NULL, NULL, NULL, NULL, 'Single Lock Min 12mm, Single Lock Min 12mm'),
+(16, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '10±1/25.4mm', NULL, NULL, NULL, NULL, NULL, NULL, 'Tether Anchor 67.8+3/0mm, TAB 간 거리 202.8+3/0mm,258±10mm,225±10mm,175±10mm,240±10mm,722±10mm,235±10mm,225±10mm'),
+(17, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '10±1/25.4mm', NULL, NULL, NULL, NULL, NULL, NULL, 'Tether Anchor 67.8+3/0mm, TAB 간 거리 202.8+3/0mm,258±10mm,225±10mm,175±10mm,240±10mm,722±10mm,235±10mm,225±10mm'),
+(18, '20±1mm', NULL, NULL, NULL, NULL, NULL, NULL, '10±1/25.4mm', '10+3-1/25.4mm', NULL, NULL, NULL, NULL, NULL, 'Tether overlap,15±5mm,Stap,44±4mm,Folding,280+10-5mm,Chain Sewing(외주)20±3mm,Chain Sewing 직선,30±3mm'),
+(19, '20±1mm', NULL, NULL, NULL, NULL, NULL, NULL, '10±1/25.4mm', '10+3-1/25.4mm', NULL, NULL, NULL, NULL, NULL, 'Tether overlap,15±5mm,Stap,44±4mm,Folding,280+10-5mm,Chain Sewing(외주)20±3mm,Chain Sewing 직선,30±3mm'),
+(20, '55±1mm', '80±2mm', '100±2mm', 'MAX(105)mm', 'MAX(210)mm', 'MAX(90)mm', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(21, '45±1mm', '70±2mm', '90±2mm', 'MAX(105)mm', 'MAX(210)mm\n', 'MAX(90)mm', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(22, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '9+3-1/25mm', NULL, NULL, NULL, NULL, NULL, NULL, 'Tether Anchor 67.8+3/0mm, TAB 간 거리 202.8+3/0mm,258±10mm,225±10mm,175±10mm,240±10mm,722±10mm,235±10mm,225±10mm'),
+(23, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '9+3-1/25mm', NULL, NULL, NULL, NULL, NULL, NULL, 'Tether Anchor 67.8+3/0mm, TAB 간 거리 202.8+3/0mm,258±10mm,225±10mm,175±10mm,240±10mm,722±10mm,235±10mm,225±10mm'),
+(24, '45±1mm', '80±2mm', '100±2mm', 'MAX(110)mm', 'MAX(200)mm', 'MAX(90)mm', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(25, '25±1mm', '60±3mm', NULL, '(120 +5 -10)mm', '(120 +5 -10)mm', '(55 +10 -5)mm', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- 테이블 구조 `DELIVERY`
+--
+
+DROP TABLE IF EXISTS `DELIVERY`;
+CREATE TABLE `DELIVERY` (
+  `NO` int(11) NOT NULL,
+  `PRODUCT_NO` int(10) NOT NULL,
+  `PRODUCT_CODE` varchar(30) DEFAULT NULL,
+  `PRODUCT_FULLNAME` varchar(50) DEFAULT NULL,
+  `COUNT` int(10) NOT NULL,
+  `DATE` date NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 테이블의 덤프 데이터 `DELIVERY`
+--
+
+INSERT INTO `DELIVERY` (`NO`, `PRODUCT_NO`, `PRODUCT_CODE`, `PRODUCT_FULLNAME`, `COUNT`, `DATE`) VALUES
+(1, 9, NULL, 'PAB FOLDING [VF33/VN&EU]', 240, '2024-11-04'),
+(2, 9, NULL, 'PAB FOLDING [VF33/VN&EU]', 320, '2024-11-05'),
+(3, 9, NULL, 'PAB FOLDING [VF33/VN&EU]', 120, '2024-11-06'),
+(4, 15, NULL, 'PROTECTOR [VF33/CeAB]', 800, '2024-11-05'),
+(5, 22, NULL, 'CAB CUSHION [VF33/LH]', 125, '2024-11-01'),
+(6, 23, NULL, 'CAB CUSHION [VF33/RH]', 125, '2024-11-01'),
+(7, 23, NULL, 'CAB CUSHION [VF33/RH]', 100, '2024-11-05'),
+(8, 23, NULL, 'CAB CUSHION [VF33/RH]', 100, '2024-11-07'),
+(9, 22, NULL, 'CAB CUSHION [VF33/LH]', 100, '2024-11-05'),
+(10, 22, NULL, 'CAB CUSHION [VF33/LH]', 100, '2024-11-07'),
+(11, 2, NULL, 'DAB FOLDING [VF34/VN]', 48, '2024-11-07'),
+(12, 2, NULL, 'DAB FOLDING [VF34/VN]', 48, '2024-11-07'),
+(13, 12, NULL, 'SAB CUSHION [VF34/FRT/LH/75]', 400, '2024-11-07');
+
+--
+-- 트리거 `DELIVERY`
+--
+DROP TRIGGER IF EXISTS `after_delivery_delete`;
+DELIMITER $$
+CREATE TRIGGER `after_delivery_delete` AFTER DELETE ON `DELIVERY` FOR EACH ROW BEGIN
+  -- INVENTORY 테이블에 해당 PRODUCT_NO가 있는지 확인
+  IF EXISTS (SELECT * FROM INVENTORY WHERE PRODUCT_NO = OLD.PRODUCT_NO) THEN
+    -- SUM_COUNT 값을 증가시킴
+    UPDATE INVENTORY
+    SET SUM_COUNT = SUM_COUNT + OLD.COUNT, DATE = current_timestamp()
+    WHERE PRODUCT_NO = OLD.PRODUCT_NO;
+  ELSE
+    -- INVENTORY 테이블에 해당 PRODUCT_NO가 없다면 새 항목을 추가
+    INSERT INTO INVENTORY (PRODUCT_NO, SUM_COUNT, DATE)
+    VALUES (OLD.PRODUCT_NO, OLD.COUNT, current_timestamp());
+  END IF;
+END
+$$
+DELIMITER ;
+DROP TRIGGER IF EXISTS `after_delivery_insert`;
+DELIMITER $$
+CREATE TRIGGER `after_delivery_insert` AFTER INSERT ON `DELIVERY` FOR EACH ROW BEGIN
+  -- INVENTORY 테이블에 해당 PRODUCT_NO가 있는지 확인
+  IF EXISTS (SELECT * FROM INVENTORY WHERE PRODUCT_NO = NEW.PRODUCT_NO) THEN
+    -- SUM_COUNT 값을 감소시킴
+    UPDATE INVENTORY
+    SET SUM_COUNT = SUM_COUNT - NEW.COUNT, DATE = current_timestamp()
+    WHERE PRODUCT_NO = NEW.PRODUCT_NO;
+    
+    -- SUM_COUNT가 0보다 작아지면 해당 항목을 삭제
+    DELETE FROM INVENTORY
+    WHERE PRODUCT_NO = NEW.PRODUCT_NO AND SUM_COUNT <= 0;
+  END IF;
+END
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- 테이블 구조 `INVENTORY`
+--
+
+DROP TABLE IF EXISTS `INVENTORY`;
+CREATE TABLE `INVENTORY` (
+  `NO` int(11) NOT NULL,
+  `PRODUCT_NO` int(11) NOT NULL,
+  `SUM_COUNT` int(11) NOT NULL,
+  `QUANTITY` int(10) DEFAULT 0,
+  `DATE` date DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 테이블의 덤프 데이터 `INVENTORY`
+--
+
+INSERT INTO `INVENTORY` (`NO`, `PRODUCT_NO`, `SUM_COUNT`, `QUANTITY`, `DATE`) VALUES
+(1, 6, 95, 0, '2024-11-09'),
+(2, 9, 80, 0, '2024-11-09'),
+(3, 10, 1500, 0, '2024-11-09'),
+(6, 23, 100, 0, '2024-11-09'),
+(8, 12, 1000, 0, '2024-11-09'),
+(9, 14, 1300, 0, '2024-11-09'),
+(10, 19, 480, 0, '2024-11-09'),
+(11, 2, 296, 0, '2024-11-09');
+
+-- --------------------------------------------------------
+
+--
+-- 테이블 구조 `JADAN_INVENTORY`
+--
+
+DROP TABLE IF EXISTS `JADAN_INVENTORY`;
+CREATE TABLE `JADAN_INVENTORY` (
+  `NO` int(10) NOT NULL,
+  `WORK_DAY` date NOT NULL DEFAULT current_timestamp(),
+  `WORKING_ORDER_NO` int(11) NOT NULL,
+  `COUNT` int(10) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 테이블의 덤프 데이터 `JADAN_INVENTORY`
+--
+
+INSERT INTO `JADAN_INVENTORY` (`NO`, `WORK_DAY`, `WORKING_ORDER_NO`, `COUNT`) VALUES
+(47, '2024-06-20', 0, 100),
+(48, '2024-06-28', 0, 1),
+(49, '2024-06-28', 0, 1),
+(50, '2024-06-28', 0, 1),
+(51, '2024-07-05', 0, 100),
+(52, '2024-06-28', 0, 1),
+(53, '2024-06-29', 0, 2),
+(54, '2024-07-02', 0, 1),
+(55, '2024-07-05', 0, 100),
+(56, '2024-07-06', 0, 1),
+(57, '2024-07-12', 0, 1),
+(58, '2024-07-12', 0, 1),
+(59, '2024-07-15', 0, 1),
+(60, '2024-07-07', 0, 1),
+(61, '2024-07-07', 0, 1),
+(62, '2024-07-15', 0, 1),
+(63, '2024-07-15', 0, 1),
+(64, '2024-07-15', 0, 1),
+(65, '2024-07-08', 0, 1),
+(66, '2024-07-15', 0, 1),
+(67, '2024-07-15', 0, 1),
+(68, '2024-07-15', 0, 1),
+(69, '2024-07-15', 0, 1),
+(47, '2024-06-20', 0, 100),
+(48, '2024-06-28', 0, 1),
+(49, '2024-06-28', 0, 1),
+(50, '2024-06-28', 0, 1),
+(51, '2024-07-05', 0, 100),
+(52, '2024-06-28', 0, 1),
+(53, '2024-06-29', 0, 2),
+(54, '2024-07-02', 0, 1),
+(55, '2024-07-05', 0, 100),
+(56, '2024-07-06', 0, 1),
+(57, '2024-07-12', 0, 1),
+(58, '2024-07-12', 0, 1),
+(59, '2024-07-15', 0, 1),
+(60, '2024-07-07', 0, 1),
+(61, '2024-07-07', 0, 1),
+(62, '2024-07-15', 0, 1),
+(63, '2024-07-15', 0, 1),
+(64, '2024-07-15', 0, 1),
+(65, '2024-07-08', 0, 1),
+(66, '2024-07-15', 0, 1),
+(67, '2024-07-15', 0, 1),
+(68, '2024-07-15', 0, 1),
+(69, '2024-07-15', 0, 1);
+
+-- --------------------------------------------------------
+
+--
+-- 테이블 구조 `JAEDAN`
+--
+
+DROP TABLE IF EXISTS `JAEDAN`;
+CREATE TABLE `JAEDAN` (
+  `NO` int(11) NOT NULL,
+  `WORK_ORDER_NO` int(10) NOT NULL,
+  `WONDAN_STORE` int(10) NOT NULL,
+  `WONDAN_MANAGER_NO` varchar(10) NOT NULL,
+  `LOT` varchar(30) NOT NULL,
+  `Y_COUNT` int(10) NOT NULL,
+  `MARKS` int(10) NOT NULL,
+  `COUNT` int(10) NOT NULL,
+  `DEFECTIVE` int(10) DEFAULT NULL,
+  `CREATE_DATE` date NOT NULL DEFAULT current_timestamp(),
+  `WORK_DATE` date NOT NULL DEFAULT current_timestamp(),
+  `REG_ACCOUNT` int(10) NOT NULL,
+  `STATE` int(11) NOT NULL DEFAULT 0,
+  `PROCESS_STATE` int(10) NOT NULL DEFAULT 0,
+  `UPDATE_ACCOUNT` int(10) DEFAULT NULL,
+  `PROCESS_STATE_UP_ACCOUNT` int(10) DEFAULT NULL,
+  `PROCESS_START_ACCOUNT` int(10) DEFAULT NULL,
+  `PROCESSCODE` varchar(30) DEFAULT NULL,
+  `PROCESS_END_DATE` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 테이블의 덤프 데이터 `JAEDAN`
+--
+
+INSERT INTO `JAEDAN` (`NO`, `WORK_ORDER_NO`, `WONDAN_STORE`, `WONDAN_MANAGER_NO`, `LOT`, `Y_COUNT`, `MARKS`, `COUNT`, `DEFECTIVE`, `CREATE_DATE`, `WORK_DATE`, `REG_ACCOUNT`, `STATE`, `PROCESS_STATE`, `UPDATE_ACCOUNT`, `PROCESS_STATE_UP_ACCOUNT`, `PROCESS_START_ACCOUNT`, `PROCESSCODE`, `PROCESS_END_DATE`) VALUES
+(14, 23, 20, '1025', 'H244j0108', 118, 4, 472, 5, '2024-10-25', '2024-10-25', 10, 2, 3, 10, 2, 10, 'KACL230090K2024102514', '2024-11-09'),
+(15, 24, 19, '1025', 'H22970147', 122, 4, 488, 0, '2024-10-25', '2024-10-25', 10, 2, 3, 10, 2, 10, 'KACL230090K2024102515', '2024-11-09'),
+(16, 26, 22, '1025', 'H244f1205', 92, 4, 368, 0, '2024-10-25', '2024-10-25', 10, 2, 3, 10, 2, 10, 'KACL230090K2024102516', '2024-11-09'),
+(17, 25, 18, '1025', 'H244W0320', 122, 4, 488, 0, '2024-10-25', '2024-10-25', 10, 2, 3, 10, 2, 10, 'KACL230090K2024102517', '2024-11-09'),
+(18, 27, 28, '1019', 'H22970122', 102, 8, 816, 0, '2024-10-19', '2024-10-19', 10, 2, 3, 10, 2, 10, 'KACL231050K-22024101918', '2024-11-09'),
+(19, 28, 26, '1019', 'H22970139', 102, 8, 816, 0, '2024-10-21', '2024-10-21', 10, 2, 3, 10, 2, 10, 'KACL231040K-22024102119', '2024-11-09'),
+(20, 29, 27, '1021', 'H23890511', 100, 8, 800, 0, '2024-10-21', '2024-10-21', 10, 2, 3, 10, 2, 10, 'KACL231040K-22024102120', '2024-11-09'),
+(21, 30, 29, '1', 'KADL40101K', 1, 1, 875, 0, '2024-10-17', '2024-10-17', 10, 2, 3, 10, 2, 10, 'KADL230220K2024101721', '2024-11-09'),
+(22, 31, 30, '1', 'KADL401021K-1', 1, 1, 875, 0, '2024-10-17', '2024-10-17', 10, 2, 3, 10, 2, 10, 'KADL230230K2024101722', '2024-11-09'),
+(23, 32, 31, '1018', 'H248L2218', 105, 10, 1050, 0, '2024-10-18', '2024-10-18', 10, 2, 3, 10, 2, 10, 'KAAL230007K-12024101823', '2024-11-09'),
+(25, 36, 23, '1029', 'H244w0309', 109, 6, 654, 0, '2024-10-29', '2024-10-29', 10, 2, 3, 10, 2, 10, 'KAEL230041K-12024102925', '2024-11-09'),
+(26, 35, 44, '1105', 'H248L2217', 98, 10, 980, 0, '2024-11-05', '2024-11-05', 51, 2, 3, 51, 2, 51, 'KAAL230007K-12024110526', '2024-11-09'),
+(27, 37, 52, '1104', 'KADL401021K', 1, 1, 450, 0, '2024-11-04', '2024-11-04', 10, 2, 3, 10, 2, 10, 'KADL230220K2024110427', '2024-11-09'),
+(28, 38, 53, '1104', 'KADL401021K-01', 1, 1, 450, 0, '2024-11-04', '2024-11-04', 10, 2, 3, 10, 2, 10, 'KADL230230K2024110428', '2024-11-09'),
+(29, 39, 25, '1030', 'H24280247', 110, 6, 660, 0, '2024-10-30', '2024-11-06', 10, 2, 3, 10, 2, 10, 'KAEL230041K-12024110629', '2024-11-09'),
+(30, 42, 18, '1031', 'H244W0320', 99, 8, 782, 0, '2024-10-31', '2024-10-31', 10, 2, 3, 10, 2, 10, 'KACL231040K-22024103130', '2024-11-09'),
+(31, 43, 34, '1031', 'H24X83301', 95, 8, 760, 0, '2024-10-31', '2024-10-31', 10, 2, 3, 10, 2, 10, 'KACL231040K-22024103131', '2024-11-09'),
+(33, 45, 33, '1104', 'H24X83206', 119, 4, 476, 0, '2024-11-04', '2024-11-04', 10, 2, 3, 10, 2, 10, 'KACL230090K2024110433', '2024-11-09'),
+(34, 44, 18, '1031', 'H244W0320', 122, 4, 488, 0, '2024-10-31', '2024-10-31', 10, 2, 3, 10, 2, 10, 'KACL230090K2024103134', '2024-11-09'),
+(35, 47, 35, '1104', 'H24X83207', 119, 4, 476, 0, '2024-11-04', '2024-11-04', 10, 2, 3, 10, 2, 10, 'KACL230090K2024110435', '2024-11-09'),
+(36, 48, 54, '1', 'jaego01', 1, 1, 296, 0, '2024-11-09', '2024-11-09', 2, 2, 2, 2, 2, 2, 'KAAL230020K2024110936', NULL),
+(37, 49, 55, '1', 'jaego02', 1, 1, 48, 0, '2024-11-09', '2024-11-09', 2, 2, 3, 2, 2, 2, 'KAAL230007K-12024110937', '2024-11-09'),
+(38, 50, 56, '1', 'jaego03', 1, 1, 800, 0, '2024-11-09', '2024-11-09', 2, 2, 3, 2, 2, 2, 'KACL360010K2024110938', '2024-11-09'),
+(39, 51, 57, '1', 'jaego04', 1, 1, 900, 0, '2024-11-09', '2024-11-09', 2, 2, 3, 2, 2, 2, 'KACL230090K2024110939', '2024-11-09'),
+(40, 52, 58, '1', 'jaego05', 1, 1, 320, 0, '2024-11-09', '2024-11-09', 2, 2, 3, 2, 2, 2, 'KABL230080K-12024110940', '2024-11-09'),
+(41, 53, 59, '1', 'jaego06', 1, 1, 95, 0, '2024-11-09', '2024-11-09', 2, 2, 3, 2, 2, 2, 'KAAL230080K2024110941', '2024-11-09');
+
+-- --------------------------------------------------------
+
+--
+-- 테이블 구조 `PROCESS_CHART`
+--
+
+DROP TABLE IF EXISTS `PROCESS_CHART`;
+CREATE TABLE `PROCESS_CHART` (
+  `NO` int(11) NOT NULL,
+  `DATE` date NOT NULL DEFAULT current_timestamp(),
+  `ORDER_NO` int(30) NOT NULL,
+  `PROCESS_CHART_STATE` int(11) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 테이블의 덤프 데이터 `PROCESS_CHART`
+--
+
+INSERT INTO `PROCESS_CHART` (`NO`, `DATE`, `ORDER_NO`, `PROCESS_CHART_STATE`) VALUES
+(10, '2024-08-18', 1, 1);
+
+-- --------------------------------------------------------
+
+--
+-- 테이블 구조 `PRODUCTION`
+--
+
+DROP TABLE IF EXISTS `PRODUCTION`;
+CREATE TABLE `PRODUCTION` (
+  `NO` int(11) NOT NULL,
+  `PROCESSCODE` varchar(50) DEFAULT NULL,
+  `LOT` varchar(30) DEFAULT NULL,
+  `BOX_NO` int(10) DEFAULT NULL,
+  `QUANTITY` int(11) DEFAULT NULL,
+  `CREATE_DATE` date NOT NULL DEFAULT current_timestamp(),
+  `STATE` int(1) NOT NULL DEFAULT 0 COMMENT '0은 생산입고 1은 출고',
+  `OUT_DATE` date DEFAULT current_timestamp(),
+  `DESCRIPTION` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- 테이블 구조 `PRODUCTS`
+--
+
+DROP TABLE IF EXISTS `PRODUCTS`;
+CREATE TABLE `PRODUCTS` (
+  `NO` int(11) NOT NULL,
+  `PRODUCT_CODE` varchar(50) DEFAULT NULL,
+  `CAR` varchar(30) DEFAULT NULL,
+  `LOCATION` varchar(30) NOT NULL,
+  `COMPANY` varchar(30) DEFAULT NULL,
+  `PRODUCT_NAME` varchar(50) DEFAULT NULL,
+  `PRODUCT_BARCODE` varchar(50) DEFAULT NULL,
+  `BARCODE_NO` varchar(30) DEFAULT NULL,
+  `BARCODE_REV` varchar(30) DEFAULT NULL,
+  `PRODUCT_CODE_NAME` varchar(30) NOT NULL,
+  `PRODUCT_PART01` varchar(30) NOT NULL,
+  `PRODUCT_FULLNAME` varchar(50) NOT NULL,
+  `PRODUCT_DESC01` varchar(30) NOT NULL,
+  `PRODUCT_DESC02` varchar(30) NOT NULL,
+  `PRODUCT_DESC03` varchar(30) NOT NULL,
+  `PRODUCT_PART` varchar(30) DEFAULT NULL,
+  `CERT_DATE` varchar(30) DEFAULT NULL,
+  `CERTIFY` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 테이블의 덤프 데이터 `PRODUCTS`
+--
+
+INSERT INTO `PRODUCTS` (`NO`, `PRODUCT_CODE`, `CAR`, `LOCATION`, `COMPANY`, `PRODUCT_NAME`, `PRODUCT_BARCODE`, `BARCODE_NO`, `BARCODE_REV`, `PRODUCT_CODE_NAME`, `PRODUCT_PART01`, `PRODUCT_FULLNAME`, `PRODUCT_DESC01`, `PRODUCT_DESC02`, `PRODUCT_DESC03`, `PRODUCT_PART`, `CERT_DATE`, `CERTIFY`) VALUES
+(1, 'KAAL230007K', 'VF33', 'VN', 'VINFAST', 'DAB', '0', '0', '0', 'DAB FOLDING [VF33/VN]', 'FOLDING', 'DAB FOLDING [VF33/VN]', 'VF33 VN', '[VF33/VN]', 'VF33 DAB VN', 'DAB', '2024-02-20 오전 12:00:00', 1),
+(2, 'KAAL230007K-1', 'VF34', 'VN', 'VINFAST', 'DAB', 'KAAL230090K01', 'KAAL230090K', '01', 'DAB FOLDING [VF34/VN]', 'FOLDING', 'DAB FOLDING [VF34/VN]', 'VF34 VN', '[VF34/VN]', 'VF34 DAB VN', 'DAB', '2024-03-15 오전 12:00:00', 1),
+(3, 'KAAL230011K', 'VF33', 'EU', 'VINFAST', 'DAB', 'KAAL230110K 00', 'KAAL230110K', '00', 'DAB FOLDING [VF33/EU]', 'FOLDING', 'DAB FOLDING [VF33/EU]', 'VF33 EU', '[VF33/EU]', 'VF33 DAB EU', 'DAB', '2024-03-15 오전 12:00:00', 1),
+(4, 'KAAL230020K', 'VF35', 'VN&EU', 'VINFAST', 'DAB', 'KAAL230010K00', 'KAAL230010K', '00', 'DAB FOLDING [VF35/VN&EU]', 'FOLDING', 'DAB FOLDING [VF35/VN&EU]', 'VF35 VN&EU', '[VF35/VN&EU]', 'VF35 DAB VN&EU', 'DAB', '2024-07-05 오전 12:00:00', 1),
+(5, 'KAAL230060K', 'VF35', 'US', 'VINFAST', 'DAB', 'KAAR230000K 00', 'KAAR230000K', '00', 'DAB FOLDING [VF35/US]', 'FOLDING', 'DAB FOLDING [VF35/US]', 'VF35 US', '[VF35/US]', 'VF35 DAB US', 'DAB', '2024-07-06 오전 12:00:00', 1),
+(6, 'KAAL230080K', 'LD DAB', 'DAB', 'VINFAST', 'DAB', 'KAAL230080K 01', 'KAAL230080K', '01', 'DAB FOLDING [LD]', 'FOLDING', 'DAB FOLDING [LD]', 'LD DAB', '[LD]', 'LD DAB', 'DAB', '2024-03-15 오전 12:00:00', 1),
+(7, 'KABL230000K', 'VF35', 'US', 'VINFAST', 'PAB', 'KABL230050C 00', 'KABL230050C', '00', 'PAB FOLDING [VF35/US]', 'FOLDING', 'PAB FOLDING [VF35/US]', 'VF35 US', '[VF35/US]', 'VF35 PAB US', 'PAB', '2024-07-11 오전 12:00:00', 1),
+(8, 'KABL230080K', 'VF33', 'VN&EU', 'VINFAST', 'PAB', '0', '0', '0', 'PAB FOLDING [VF33/VN&EU]', 'FOLDING', 'PAB FOLDING [VF33/VN&EU]', 'VF33 VN&EU', '[VF33/VN&EU]', 'VF33 PAB VN&EU', 'PAB', '2024-02-16 오전 12:00:00', 1),
+(9, 'KABL230080K-1', 'VF33', 'VN&EU', 'VINFAST', 'PAB', 'KABL230011K 01', 'KABL230011K', '01', 'PAB FOLDING [VF33/VN&EU]', 'FOLDING', 'PAB FOLDING [VF33/VN&EU]', 'VF33 VN&EU', '[VF33/VN&EU]', 'VF33 PAB VN&EU', 'PAB', '2024-07-09 오전 12:00:00', 1),
+(10, 'KACL230090K', 'VF33', 'FRT-CTR', 'VINFAST', 'SAB', 'KACL230090K 00', 'KACL230090K', '00', 'SAB CUSHION [VF33/FRT/CTR]', 'CUSHION', 'SAB CUSHION [VF33/FRT/CTR]', 'VF33 FRT-CTR', '[VF33/FRT/CTR]', 'VF33 FRT-CTR', 'SAB', '2024-03-13 오전 12:00:00', 1),
+(11, 'KACL231040K', 'VF33', 'FRT-LH', 'VINFAST', 'SAB', 'KACL231040K 01', 'KACL231040K', '01', 'SAB CUSHION [VF33/FRT/LH/70]', 'CUSHION', 'SAB CUSHION [VF33/FRT/LH/70]', 'VF33 FRT-LH', '[VF33/FRT/LH/70]', 'VF33 FRT-LH', 'SAB', '2024-03-07 오전 12:00:00', 1),
+(12, 'KACL231040K-2', 'VF34', 'FR-LH 75mm', 'VINFAST', 'SAB', 'KACL231040K 02', 'KACL231040K', '02', 'SAB CUSHION [VF34/FRT/LH/75]', 'CUSHION', 'SAB CUSHION [VF34/FRT/LH/75]', 'VF34 FR-LH 75mm', '[VF34/FRT/LH/75]', 'VF34 FR-LH 75mm', 'SAB', '2024-03-12 오전 12:00:00', 1),
+(13, 'KACL231050K', 'VF33', 'FRT-RH', 'VINFAST', 'SAB', 'KACL231050K 01', 'KACL231050K', '01', 'SAB CUSHION [VF33/FRT/RH/70]', 'CUSHION', 'SAB CUSHION [VF33/FRT/RH/70]', 'VF33 FRT-RH', '[VF33/FRT/RH/70]', 'VF33 FRT-RH', 'SAB', '2024-02-26 오전 12:00:00', 1),
+(14, 'KACL231050K-2', 'VF34', 'FR-RH 75mm', 'VINFAST', 'SAB', 'KACL231050K 02', 'KACL231050K', '02', 'SAB CUSHION [VF34/FRT/RH/75]', 'CUSHION', 'SAB CUSHION [VF34/FRT/RH/75]', 'VF34 FR-RH 75mm', '[VF34/FRT/RH/75]', 'VF34 FR-RH 75mm', 'SAB', '2024-03-14 오전 12:00:00', 1),
+(15, 'KACL360010K', 'VF33', 'CeAB', 'VINFAST', 'PROTECTOR', '0', '0', '0', 'PROTECTOR [VF33/CeAB]', 'PROTECTOR', 'PROTECTOR [VF33/CeAB]', 'VF33 CeAB', '[VF33/CeAB]', 'VF33 CeAB', 'PROTECTOR', '2024-03-13 오전 12:00:00', 1),
+(16, 'KADL230060K', 'VF33', 'CAB-LH', 'VINFAST', 'CAB', 'KADL230060K 00', 'KADL230060K', '00', 'CAB CUSHION [VF33/VN&EU/LH]', 'CUSHION', 'CAB CUSHION [VF33/VN&EU/LH]', 'VF33 CAB-LH', '[VF33/VN&EU/LH]', 'VF33 CAB-LH', 'CAB', '2024-02-15 오전 12:00:00', 1),
+(17, 'KADL230070K', 'VF33', 'CAB-RH', 'VINFAST', 'CAB', 'KADL230070K 00', 'KADL230070K', '00', 'CAB CUSHION [VF33/VN&EU/RH]', 'CUSHION', 'CAB CUSHION [VF33/VN&EU/RH]', 'VF33 CAB-RH', '[VF33/VN&EU/RH]', 'VF33 CAB-RH', 'CAB', '2024-02-15 오전 12:00:00', 1),
+(18, 'KAEL230041K', 'VF33', 'KAB', 'VINFAST', 'KAB', 'KAEL230041K 00', 'KAEL230041K', '00', 'KAB CUSHION [VF33]', 'CUSHION', 'KAB CUSHION [VF33]', 'VF33 KAB', '[VF33]', 'VF33 KAB', 'KAB', '2024-02-20 오전 12:00:00', 1),
+(19, 'KAEL230041K-1', 'VF34', 'KAB', 'VINFAST', 'KAB', 'KAEL230041K 01', 'KAEL230041K', '01', 'KAB CUSHION [VF34]', 'CUSHION', 'KAB CUSHION [VF34]', 'VF34 KAB', '[VF34]', 'VF34 KAB', 'KAB', '2024-03-15 오전 12:00:00', 1),
+(20, 'KABL230000K', 'VF35', 'US', 'VINFAST', 'PAB', 'KAAR230000K 00', 'KAAR230000K', '00', 'PAB FOLDING [VF35/US]', 'FOLDING', 'PAB FOLDING [VF35/US]', 'VF35/US PAB', '[VF35/US]', 'VF35/US PAB ', 'PAB', '2024-07-11 오전 12:00:00', 1),
+(21, 'KABL230010K', 'VF35', 'VN&EU', 'VINFAST', 'PAB', 'KABL230010K 02', 'KABL230010K', '02', 'PAB FOLDING [VF35/VN&EU]', 'FOLDING', 'PAB FOLDING [VF35/VN&EU]', 'VF35/VN&EU PAB', '[VF35/VN&EU]', 'VF35/VN&EU PAB ', 'PAB', '2024-07-25 오전 12:00:00', 1),
+(22, 'KADL230220K', 'VF33 ', 'CAB-LH', 'VINFAST', 'CAB', 'KADL230220K 00', 'KADL230220K', '00', 'CAB CUSHION [VF33/LH]신형', 'CUSHION', 'CAB CUSHION [VF33/LH]', 'VF33 CAB-LH', '[VF33 CAB-LH]', 'VF33 CAB-LH', 'CAB', '45504', 1),
+(23, 'KADL230230K', 'VF33 ', 'CAB-RH', 'VINFAST', 'CAB', 'KADL230230K 00', 'KADL230230K', '00', 'CAB CUSHION [VF33/RH]신형', 'CUSHION', 'CAB CUSHION [VF33/RH]', 'VF33 CAB-RH', '[VF33 CAB-RH]', 'VF33 CAB-RH', 'CAB', '45504', 1),
+(24, 'KABL230110K', 'VF34', 'PAB', 'VINFAST', 'PAB', 'KABL230110K 00', 'KABL230110K', '00', 'PAB_FOLDING_VF34_US', 'FOLDING', 'PAB_FOLDING_[VF34_US]', 'VF34 PAB_US', '[VF34 PAB_US]', 'VF34 PAB_US', 'PAB', NULL, 0),
+(25, 'KABL230090K', 'VF33', 'PAB', 'VINFAST', 'PAB', 'KABL230090K 00', 'KABL230090K', '00', 'PAB FOLDING VF33 US', 'FOLDING', 'PAB FOLDING [VF33 US]', 'VF33 PAB US', '[VF33 PAB US]', 'VF33 PAB US', 'PAB', NULL, 0);
+
+-- --------------------------------------------------------
+
+--
+-- 테이블 구조 `SCANNED_BARCODE`
+--
+
+DROP TABLE IF EXISTS `SCANNED_BARCODE`;
+CREATE TABLE `SCANNED_BARCODE` (
+  `NO` int(11) NOT NULL,
+  `BARCODE` varchar(255) NOT NULL,
+  `CREATE_DATE` date NOT NULL DEFAULT current_timestamp(),
+  `PRODUCTION_ID` int(10) DEFAULT NULL,
+  `PROCESS_CODE` varchar(30) DEFAULT NULL,
+  `BOX_NO` varchar(30) DEFAULT NULL,
+  `LOT` varchar(10) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- 테이블 구조 `STOCK`
+--
+
+DROP TABLE IF EXISTS `STOCK`;
+CREATE TABLE `STOCK` (
+  `NO` int(11) NOT NULL,
+  `PRODUCT_NO` int(11) NOT NULL,
+  `PRODUCT_CODE` varchar(30) DEFAULT NULL,
+  `PRODUCT_FULLNAME` varchar(50) DEFAULT NULL,
+  `PROCESSCODE` varchar(50) DEFAULT '0',
+  `COUNT` int(11) DEFAULT NULL,
+  `DATE` date DEFAULT current_timestamp(),
+  `STOCK_INVENTORY` int(10) NOT NULL DEFAULT 0,
+  `OUT_COUNT` int(10) NOT NULL DEFAULT 0,
+  `STATE` int(1) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 테이블의 덤프 데이터 `STOCK`
+--
+
+INSERT INTO `STOCK` (`NO`, `PRODUCT_NO`, `PRODUCT_CODE`, `PRODUCT_FULLNAME`, `PROCESSCODE`, `COUNT`, `DATE`, `STOCK_INVENTORY`, `OUT_COUNT`, `STATE`) VALUES
+(1, 6, '6', 'DAB FOLDING [LD]', 'KAAL230080K2024110941', 95, '2024-10-20', 95, 0, 0),
+(2, 9, '9', 'PAB FOLDING [VF33/VN&EU]', 'KABL230080K-12024110940', 560, '2024-11-04', 0, 0, 0),
+(3, 9, '9', 'PAB FOLDING [VF33/VN&EU]', 'KABL230080K-12024110940', 120, '2024-11-05', 0, 0, 0),
+(4, 9, '9', 'PAB FOLDING [VF33/VN&EU]', 'KABL230080K-12024110940', 80, '2024-11-07', 80, 0, 0),
+(5, 10, '10', 'SAB CUSHION [VF33/FRT/CTR]', 'KACL230090K2024110939', 900, '2024-11-04', 900, 0, 0),
+(6, 10, '10', 'SAB CUSHION [VF33/FRT/CTR]', 'KACL230090K2024110939', 400, '2024-11-05', 400, 0, 0),
+(7, 10, '10', 'SAB CUSHION [VF33/FRT/CTR]', 'KACL230090K2024110939', 200, '2024-11-06', 200, 0, 0),
+(8, 15, '15', 'PROTECTOR [VF33/CeAB]', 'KACL360010K2024110938', 800, '2024-11-03', 0, 0, 0),
+(9, 22, '22', 'CAB CUSHION [VF33/LH]', 'KADL230220K2024101721', 125, '2024-11-01', 0, 0, 0),
+(10, 22, '22', 'CAB CUSHION [VF33/LH]', 'KADL230220K2024101721', 100, '2024-11-05', 0, 0, 0),
+(11, 22, '22', 'CAB CUSHION [VF33/LH]', 'KADL230220K2024101721', 100, '2024-11-06', 0, 0, 0),
+(12, 23, '23', 'CAB CUSHION [VF33/RH]', 'KADL230230K2024101722', 125, '2024-11-01', 0, 0, 0),
+(13, 23, '23', 'CAB CUSHION [VF33/RH]', 'KADL230230K2024101722', 100, '2024-11-05', 100, 0, 0),
+(14, 23, '23', 'CAB CUSHION [VF33/RH]', 'KADL230230K2024101722', 100, '2024-11-06', 0, 0, 0),
+(15, 23, '23', 'CAB CUSHION [VF33/RH]', 'KADL230230K2024101722', 100, '2024-11-07', 0, 0, 0),
+(16, 2, '2', 'DAB FOLDING [VF34/VN]', 'KAAL230007K-12024110937', 48, '2024-10-31', 0, 0, 0),
+(17, 2, '2', 'DAB FOLDING [VF34/VN]', 'KAAL230007K-12024110937', 48, '2024-11-07', 0, 0, 0),
+(18, 12, '12', 'SAB CUSHION [VF34/FRT/LH/75]', 'KACL231040K-22024102119', 1100, '2024-10-30', 700, 0, 0),
+(19, 12, '12', 'SAB CUSHION [VF34/FRT/LH/75]', 'KACL231040K-22024102119', 300, '2024-11-07', 300, 0, 0),
+(20, 14, '14', 'SAB CUSHION [VF34/FRT/RH/75]', 'KACL231050K-22024101918', 1100, '2024-11-03', 1100, 0, 0),
+(21, 14, '14', 'SAB CUSHION [VF34/FRT/RH/75]', 'KACL231050K-22024101918', 200, '2024-11-07', 200, 0, 0),
+(22, 19, '19', 'KAB CUSHION [VF34]', 'KAEL230041K-12024102925', 480, '2024-11-02', 480, 0, 0),
+(23, 2, '2', 'DAB FOLDING [VF34/VN]', 'KAAL230007K-12024110937', 296, '2024-11-02', 296, 0, 0);
+
+--
+-- 트리거 `STOCK`
+--
+DROP TRIGGER IF EXISTS `after_stock_delete`;
+DELIMITER $$
+CREATE TRIGGER `after_stock_delete` AFTER DELETE ON `STOCK` FOR EACH ROW BEGIN
+  -- INVENTORY 테이블에 해당 PRODUCT_NO가 있는지 확인
+  IF EXISTS (SELECT * FROM INVENTORY WHERE PRODUCT_NO = OLD.PRODUCT_NO) THEN
+    -- SUM_COUNT 값을 감소시킴
+    UPDATE INVENTORY
+    SET SUM_COUNT = SUM_COUNT - OLD.COUNT, DATE = current_timestamp()
+    WHERE PRODUCT_NO = OLD.PRODUCT_NO;
+    
+    -- SUM_COUNT가 0보다 작아지면 해당 항목을 삭제
+    DELETE FROM INVENTORY
+    WHERE PRODUCT_NO = OLD.PRODUCT_NO AND SUM_COUNT <= 0;
+  END IF;
+END
+$$
+DELIMITER ;
+DROP TRIGGER IF EXISTS `after_stock_insert`;
+DELIMITER $$
+CREATE TRIGGER `after_stock_insert` AFTER INSERT ON `STOCK` FOR EACH ROW BEGIN
+  -- INVENTORY 테이블에 해당 PRODUCT_NO가 있는지 확인
+  IF EXISTS (SELECT * FROM INVENTORY WHERE PRODUCT_NO = NEW.PRODUCT_NO) THEN
+    -- 존재하면 SUM_COUNT 값을 증가시킴
+    UPDATE INVENTORY
+    SET SUM_COUNT = SUM_COUNT + NEW.COUNT, DATE = current_timestamp()
+    WHERE PRODUCT_NO = NEW.PRODUCT_NO;
+  ELSE
+    -- 존재하지 않으면 새로운 항목을 삽입
+    INSERT INTO INVENTORY (PRODUCT_NO, SUM_COUNT, DATE)
+    VALUES (NEW.PRODUCT_NO, NEW.COUNT, current_timestamp());
+  END IF;
+END
+$$
+DELIMITER ;
+
+-- --------------------------------------------------------
+
+--
+-- 테이블 구조 `WONDAN`
+--
+
+DROP TABLE IF EXISTS `WONDAN`;
+CREATE TABLE `WONDAN` (
+  `NO` int(11) NOT NULL,
+  `WONDAN_NAME` varchar(50) NOT NULL,
+  `NAME` varchar(50) NOT NULL,
+  `BUPUM_NO` varchar(50) NOT NULL,
+  `SUPPLAY` varchar(50) DEFAULT NULL,
+  `WONDAN_BARCODE` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 테이블의 덤프 데이터 `WONDAN`
+--
+
+INSERT INTO `WONDAN` (`NO`, `WONDAN_NAME`, `NAME`, `BUPUM_NO`, `SUPPLAY`, `WONDAN_BARCODE`) VALUES
+(1, '49', '420D', '4949UC', NULL, NULL),
+(2, '4K', '420D', 'H24000', NULL, NULL),
+(3, '53', '420D', '5353UC', NULL, NULL),
+(4, 'H2', '420D', 'H24000', NULL, NULL),
+(5, 'NK', '420D', 'H24000', NULL, NULL),
+(6, 'SR', '940D', '940D', '도요보', NULL),
+(7, 'UC', '940D', '940D', '도요보', NULL),
+(8, 'CA', '재단품', '재단품', '코오롱', NULL),
+(10, 'LT', 'LT', 'LT', '도요보', NULL),
+(11, 'TA', 'TA', 'TA', '도요보', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- 테이블 구조 `WONDAN_STORE`
+--
+
+DROP TABLE IF EXISTS `WONDAN_STORE`;
+CREATE TABLE `WONDAN_STORE` (
+  `NO` int(11) NOT NULL,
+  `REG_DATE` date NOT NULL DEFAULT current_timestamp(),
+  `WONDAN_CODE` varchar(50) DEFAULT NULL,
+  `WONDAN_NAME` varchar(20) NOT NULL,
+  `LOT_NO` varchar(50) NOT NULL,
+  `LENGTH` int(20) NOT NULL,
+  `REAL_LENGTH` int(20) NOT NULL,
+  `SUPPLIER` varchar(50) DEFAULT NULL,
+  `REG_ACCOUNT` varchar(50) DEFAULT NULL,
+  `UPDATE_ACCOUNT` varchar(30) DEFAULT NULL,
+  `DEFECTIVE_LENGTH` int(20) DEFAULT NULL,
+  `STATE` int(20) NOT NULL DEFAULT 0,
+  `STATE_DATE` date NOT NULL DEFAULT current_timestamp(),
+  `ETC` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 테이블의 덤프 데이터 `WONDAN_STORE`
+--
+
+INSERT INTO `WONDAN_STORE` (`NO`, `REG_DATE`, `WONDAN_CODE`, `WONDAN_NAME`, `LOT_NO`, `LENGTH`, `REAL_LENGTH`, `SUPPLIER`, `REG_ACCOUNT`, `UPDATE_ACCOUNT`, `DEFECTIVE_LENGTH`, `STATE`, `STATE_DATE`, `ETC`) VALUES
+(1, '2024-10-04', NULL, 'NK', 'BAH140272A0539', 540, 539, '코오롱', '10', '10', 0, 0, '2024-10-10', NULL),
+(2, '2024-10-04', NULL, 'NK', 'BAH140272A0540', 541, 540, '코오롱', '10', '10', 0, 0, '2024-10-10', NULL),
+(3, '2024-10-04', NULL, 'NK', 'BAH140272A0541', 542, 541, '코오롱', '10', '10', 0, 0, '2024-10-10', NULL),
+(4, '2024-10-04', NULL, 'NK', 'BAH140272A0542', 543, 542, '코오롱', '10', '10', 0, 0, '2024-10-10', NULL),
+(5, '2024-10-24', NULL, 'NK', 'BAH140272A0543', 545, 543, '코오롱', '10', '10', 0, 0, '2024-10-10', NULL),
+(6, '2024-10-04', NULL, 'NK', 'BAH140272A0545', 546, 545, '코오롱', '10', '10', 0, 0, '2024-10-10', NULL),
+(18, '2024-10-18', NULL, 'SR', 'H244W0320', 306, 306, 'ihc', '10', '10', 0, 1, '2024-10-28', NULL),
+(19, '2024-10-18', NULL, 'SR', 'H22970147', 300, 300, 'ihc', '10', '10', 0, 1, '2024-10-28', NULL),
+(20, '2024-10-18', NULL, 'SR', 'H244j0108', 300, 300, 'ihc', '10', '10', 0, 1, '2024-10-28', NULL),
+(21, '2024-10-18', NULL, 'SR', 'H24410119', 300, 300, 'ihc', '10', '50', 0, 1, '2024-10-28', NULL),
+(22, '2024-10-18', NULL, 'SR', 'H244f1205', 300, 300, 'ihc', '10', '10', 0, 1, '2024-10-28', NULL),
+(23, '2024-10-18', NULL, 'SR', 'H244w0309', 300, 300, 'ihc', '10', '10', 0, 1, '2024-10-28', NULL),
+(24, '2024-10-18', NULL, 'SR', 'H244j0115', 300, 300, 'ihc', '10', '10', 0, 0, '2024-10-28', NULL),
+(25, '2024-11-06', NULL, 'SR', 'H24280247', 300, 300, 'ihc', '10', '10', 0, 1, '2024-10-28', NULL),
+(26, '2024-10-28', NULL, 'SR', 'H22970139', 300, 300, 'ihc', '10', '10', 0, 1, '2024-10-28', NULL),
+(27, '2024-10-18', NULL, 'SR', 'H23890511', 300, 300, 'ihc', '10', '10', 0, 1, '2024-10-28', NULL),
+(28, '2024-10-18', NULL, 'SR', 'H22970122', 300, 300, 'ihc', '10', '10', 0, 1, '2024-10-28', NULL),
+(29, '2024-10-28', NULL, 'UC', 'KADL40101K', 875, 875, '코오롱재단품', '10', '10', 0, 1, '2024-10-29', NULL),
+(30, '2024-10-17', NULL, 'UC', 'KADL401021K-1', 875, 875, '코오롱 재단품', '10', '10', 0, 1, '2024-10-29', NULL),
+(31, '2024-10-18', NULL, '49', 'H248L2218', 302, 302, 'ihc', '10', '10', 0, 1, '2024-10-29', NULL),
+(32, '2024-11-05', NULL, '49', 'H24190515', 299, 299, 'ihc', '10', '10', 0, 0, '2024-10-29', NULL),
+(33, '2024-11-06', NULL, 'SR', 'H24X83206', 304, 304, '두올', '50', '10', 0, 0, '2024-11-01', NULL),
+(34, '2024-11-06', NULL, 'SR', 'H24X83301', 306, 303, '두올', '50', '10', 0, 1, '2024-11-01', NULL),
+(35, '2024-11-06', NULL, 'SR', 'H24X83207', 302, 302, '두올', '50', '10', 0, 1, '2024-11-01', NULL),
+(36, '2024-10-30', NULL, 'SR', 'H249K0609', 304, 301, '두올', '50', '50', 0, 1, '2024-11-01', NULL),
+(37, '2024-10-30', NULL, 'SR', 'H24X83204', 305, 302, '두올', '50', '50', 0, 1, '2024-11-01', NULL),
+(38, '2024-11-01', NULL, '49', 'H249D1115', 311, 308, '두올', '50', '50', 0, 0, '2024-11-01', NULL),
+(39, '2024-11-01', NULL, '49', 'H249D1307', 307, 304, '두올', '50', '50', 0, 0, '2024-11-01', NULL),
+(40, '2024-11-01', NULL, '49', 'H24X80904', 299, 296, '두올', '50', '50', 0, 0, '2024-11-01', NULL),
+(41, '2024-11-01', NULL, '49', 'H249D1209', 298, 295, '두올', '50', '50', 0, 0, '2024-11-01', NULL),
+(42, '2024-11-01', NULL, '49', 'H249D1310', 305, 302, '두올', '50', '50', 0, 0, '2024-11-01', NULL),
+(43, '2024-11-05', NULL, '49', 'H23ZD0114', 306, 306, '두올', '50', '50', 0, 0, '2024-11-01', NULL),
+(44, '2024-11-05', NULL, '49', 'H248L2217', 302, 302, 'ihc', '10', '51', 0, 1, '2024-11-05', NULL),
+(45, '2024-11-05', NULL, 'SR', 'H24X83307', 308, 305, '두올', '50', '50', 0, 0, '2024-11-05', NULL),
+(46, '2024-11-05', NULL, 'SR', 'H249K0617', 308, 305, '두올', '50', '50', 0, 0, '2024-11-05', NULL),
+(47, '2024-11-05', NULL, 'SR', 'H24X83212', 303, 300, '두올', '50', '50', 0, 0, '2024-11-05', NULL),
+(48, '2024-11-05', NULL, 'SR', 'H24X83102', 310, 307, '두올', '50', '50', 0, 0, '2024-11-05', NULL),
+(49, '2024-11-05', NULL, 'SR', 'H249K0616', 300, 297, '두올', '50', '50', 0, 0, '2024-11-05', NULL),
+(52, '2024-11-01', NULL, 'CA', 'KADL401021K', 450, 450, '코오롱', '10', '10', 0, 1, '2024-11-06', NULL),
+(53, '2024-11-01', NULL, 'CA', 'KADL401021K-01', 450, 450, '코오롱', '10', '10', 0, 1, '2024-11-06', NULL),
+(54, '2024-11-09', NULL, '53', 'jaego01', 1, 1, '1', '2', '2', 0, 1, '2024-11-09', NULL),
+(55, '2024-11-09', NULL, '53', 'jaego02', 1, 1, '1', '2', '2', 0, 1, '2024-11-09', NULL),
+(56, '2024-11-09', NULL, '53', 'jaego03', 1, 1, '1', '2', '2', 0, 1, '2024-11-09', NULL),
+(57, '2024-11-09', NULL, '53', 'jaego04', 1, 1, '1', '2', '2', 0, 1, '2024-11-09', NULL),
+(58, '2024-11-09', NULL, '53', 'jaego05', 1, 1, '1', '2', '2', 0, 1, '2024-11-09', NULL),
+(59, '2024-11-09', NULL, '53', 'jaego06', 1, 1, '1', '2', '2', 0, 1, '2024-11-09', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `WorkerByDateView`
+-- (See below for the actual view)
+--
+DROP VIEW IF EXISTS `WorkerByDateView`;
+CREATE TABLE `WorkerByDateView` (
+`NO` int(11)
+,`NAME` varchar(20)
+,`DATE` date
+);
+
+-- --------------------------------------------------------
+
+--
+-- 테이블 구조 `WORKERS`
+--
+
+DROP TABLE IF EXISTS `WORKERS`;
+CREATE TABLE `WORKERS` (
+  `NO` int(11) NOT NULL,
+  `NAME` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 테이블의 덤프 데이터 `WORKERS`
+--
+
+INSERT INTO `WORKERS` (`NO`, `NAME`) VALUES
+(1, '홍길동'),
+(2, '김순희'),
+(3, '홍길동'),
+(4, '김순희'),
+(5, '홍길동1'),
+(6, '김순희1'),
+(7, '홍길동2'),
+(8, '김순희2'),
+(9, '홍길동3'),
+(10, '김순희3'),
+(11, '홍길동4'),
+(12, '김순희4'),
+(13, '홍길동5'),
+(14, '김순희5'),
+(15, '홍길동6'),
+(16, '김순희6');
+
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `WORKERS_DATE_VIEW`
+-- (See below for the actual view)
+--
+DROP VIEW IF EXISTS `WORKERS_DATE_VIEW`;
+CREATE TABLE `WORKERS_DATE_VIEW` (
+`WorkerCountNo` int(11)
+,`WorkerNames` mediumtext
+,`WORKER_COUNT` int(10)
+,`DATE` date
+);
+
+-- --------------------------------------------------------
+
+--
+-- 테이블 구조 `WORKER_COUNT`
+--
+
+DROP TABLE IF EXISTS `WORKER_COUNT`;
+CREATE TABLE `WORKER_COUNT` (
+  `NO` int(11) NOT NULL,
+  `WORKER_IDS` varchar(255) DEFAULT NULL,
+  `WORKER_COUNT` int(10) NOT NULL,
+  `DATE` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 테이블의 덤프 데이터 `WORKER_COUNT`
+--
+
+INSERT INTO `WORKER_COUNT` (`NO`, `WORKER_IDS`, `WORKER_COUNT`, `DATE`) VALUES
+(45, '1,2,3,4,5,6,7,8,9,10,11,12,13', 13, '2024-08-12'),
+(46, '1,4,6,7', 4, '2024-08-13'),
+(47, '1,3,5', 3, '2024-08-13'),
+(48, '2,5,10,12', 4, '2024-08-13'),
+(49, '1,2,3,4', 4, '2024-08-15'),
+(50, '1,2', 2, '2024-09-21'),
+(51, '3,4,5', 3, '2024-09-21'),
+(52, '1,2', 2, '2024-09-21'),
+(53, '1,2,3,4,5', 5, '2024-09-21'),
+(54, '1,2,3,8', 4, '2024-09-21'),
+(55, '8,9,10,11,13,14,15,16', 8, '2024-09-21'),
+(56, '13,14,15,16,12,11,7,8,9,10', 10, '2024-09-21'),
+(57, '1,2,3,4,5', 5, '2024-09-21');
+
+-- --------------------------------------------------------
+
+--
+-- 테이블 구조 `WORKER_SCHEDULE`
+--
+
+DROP TABLE IF EXISTS `WORKER_SCHEDULE`;
+CREATE TABLE `WORKER_SCHEDULE` (
+  `ID` int(11) NOT NULL,
+  `WORKER_NO` int(11) DEFAULT NULL,
+  `DATE` date DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `WorkingPartProductsWondanView`
+-- (See below for the actual view)
+--
+DROP VIEW IF EXISTS `WorkingPartProductsWondanView`;
+CREATE TABLE `WorkingPartProductsWondanView` (
+`WorkingPartNo` int(11)
+,`ASSY_PART_NAME` varchar(30)
+,`WONDAN_NAME` varchar(10)
+,`PRODUCT_CODE` int(11)
+,`ProductCode` varchar(50)
+,`CAR` varchar(30)
+,`LOCATION` varchar(30)
+,`COMPANY` varchar(30)
+,`PRODUCT_NAME` varchar(50)
+,`PRODUCT_BARCODE` varchar(50)
+,`BARCODE_NO` varchar(30)
+,`BARCODE_REV` varchar(30)
+,`PRODUCT_CODE_NAME` varchar(30)
+,`PRODUCT_PART01` varchar(30)
+,`PRODUCT_FULLNAME` varchar(50)
+,`PRODUCT_DESC01` varchar(30)
+,`PRODUCT_DESC02` varchar(30)
+,`PRODUCT_DESC03` varchar(30)
+,`PRODUCT_PART` varchar(30)
+,`CERT_DATE` varchar(30)
+,`CERTIFY` int(11)
+,`WondanName` varchar(50)
+,`BUPUM_NO` varchar(50)
+,`SUPPLAY` varchar(50)
+,`WONDAN_BARCODE` varchar(50)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `WorkingPartProductsWondanViewTable`
+-- (See below for the actual view)
+--
+DROP VIEW IF EXISTS `WorkingPartProductsWondanViewTable`;
+CREATE TABLE `WorkingPartProductsWondanViewTable` (
+`WorkingPartNo` int(11)
+,`ASSY_PART_NAME` varchar(30)
+,`WONDAN_NAME` varchar(10)
+,`PRODUCT_CODE` int(11)
+,`ProductCode` varchar(50)
+,`CAR` varchar(30)
+,`LOCATION` varchar(30)
+,`COMPANY` varchar(30)
+,`PRODUCT_NAME` varchar(50)
+,`PRODUCT_BARCODE` varchar(50)
+,`BARCODE_NO` varchar(30)
+,`BARCODE_REV` varchar(30)
+,`PRODUCT_CODE_NAME` varchar(30)
+,`PRODUCT_PART01` varchar(30)
+,`PRODUCT_FULLNAME` varchar(50)
+,`PRODUCT_DESC01` varchar(30)
+,`PRODUCT_DESC02` varchar(30)
+,`PRODUCT_DESC03` varchar(30)
+,`PRODUCT_PART` varchar(30)
+,`CERT_DATE` varchar(30)
+,`CERTIFY` int(11)
+,`WondanName` varchar(50)
+,`BUPUM_NO` varchar(50)
+,`SUPPLAY` varchar(50)
+,`WONDAN_BARCODE` varchar(50)
+);
+
+-- --------------------------------------------------------
+
+--
+-- 테이블 구조 `WORKING_ORDER`
+--
+
+DROP TABLE IF EXISTS `WORKING_ORDER`;
+CREATE TABLE `WORKING_ORDER` (
+  `NO` int(10) NOT NULL,
+  `WORKING_PART` int(10) NOT NULL,
+  `COUNT` int(10) NOT NULL,
+  `CREATE_DATE` timestamp NOT NULL DEFAULT current_timestamp(),
+  `STATE` int(10) NOT NULL DEFAULT 0,
+  `JAEDAN_STATE` int(10) NOT NULL DEFAULT 0,
+  `REG_ACCOUNT` int(10) NOT NULL,
+  `ORDER_ACCOUNT` varchar(30) DEFAULT NULL,
+  `UPDATE_ACCOUNT` int(10) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 테이블의 덤프 데이터 `WORKING_ORDER`
+--
+
+INSERT INTO `WORKING_ORDER` (`NO`, `WORKING_PART`, `COUNT`, `CREATE_DATE`, `STATE`, `JAEDAN_STATE`, `REG_ACCOUNT`, `ORDER_ACCOUNT`, `UPDATE_ACCOUNT`) VALUES
+(23, 10, 0, '2024-10-24 15:00:00', 1, 0, 10, NULL, 10),
+(24, 10, 0, '2024-10-24 15:00:00', 1, 0, 10, NULL, 10),
+(25, 10, 0, '2024-10-24 15:00:00', 1, 0, 10, NULL, 10),
+(26, 10, 0, '2024-10-24 15:00:00', 1, 0, 10, NULL, 10),
+(27, 14, 0, '2024-10-18 15:00:00', 1, 0, 10, NULL, 10),
+(28, 12, 0, '2024-10-20 15:00:00', 1, 0, 10, NULL, 10),
+(29, 12, 0, '2024-10-20 15:00:00', 1, 0, 10, NULL, 10),
+(30, 22, 875, '2024-10-16 15:00:00', 1, 0, 10, NULL, 10),
+(31, 23, 875, '2024-10-16 15:00:00', 1, 0, 10, NULL, 10),
+(32, 2, 0, '2024-10-17 15:00:00', 1, 0, 10, NULL, 10),
+(35, 2, 0, '2024-11-04 15:00:00', 1, 0, 10, NULL, 51),
+(36, 19, 0, '2024-10-28 15:00:00', 1, 0, 10, NULL, 10),
+(37, 22, 450, '2024-11-03 15:00:00', 1, 0, 10, NULL, 10),
+(38, 23, 450, '2024-11-03 15:00:00', 1, 0, 10, NULL, 10),
+(39, 19, 1030, '2024-10-29 15:00:00', 1, 0, 10, NULL, 10),
+(42, 12, 1031, '2024-10-30 15:00:00', 1, 0, 10, NULL, 10),
+(43, 12, 1031, '2024-10-30 15:00:00', 1, 0, 10, NULL, 10),
+(44, 10, 1031, '2024-10-30 15:00:00', 1, 0, 10, NULL, 10),
+(45, 10, 1104, '2024-11-03 15:00:00', 1, 0, 10, NULL, 10),
+(47, 10, 1104, '2024-11-03 15:00:00', 1, 0, 10, NULL, 10),
+(48, 4, 1, '2024-11-08 15:00:00', 1, 0, 2, NULL, 2),
+(49, 2, 48, '2024-11-08 15:00:00', 1, 0, 2, NULL, 2),
+(50, 15, 800, '2024-11-08 15:00:00', 1, 0, 2, NULL, 2),
+(51, 10, 900, '2024-11-08 15:00:00', 1, 0, 2, NULL, 2),
+(52, 9, 320, '2024-11-08 15:00:00', 1, 0, 2, NULL, 2),
+(53, 6, 1, '2024-11-08 15:00:00', 1, 0, 2, NULL, 2);
+
+-- --------------------------------------------------------
+
+--
+-- 테이블 구조 `WORKING_PART`
+--
+
+DROP TABLE IF EXISTS `WORKING_PART`;
+CREATE TABLE `WORKING_PART` (
+  `NO` int(11) NOT NULL,
+  `ASSY_PART_NAME` varchar(30) DEFAULT NULL,
+  `WONDAN_CODE` int(10) NOT NULL,
+  `WONDAN_NAME` varchar(10) DEFAULT NULL,
+  `SUB_WONDAN` varchar(10) DEFAULT NULL,
+  `PRODUCT_CODE` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- 테이블의 덤프 데이터 `WORKING_PART`
+--
+
+INSERT INTO `WORKING_PART` (`NO`, `ASSY_PART_NAME`, `WONDAN_CODE`, `WONDAN_NAME`, `SUB_WONDAN`, `PRODUCT_CODE`) VALUES
+(1, 'DAB', 0, '1', '6', 1),
+(2, 'DAB', 2, '1', '6', 2),
+(3, 'DAB', 0, '1', '6', 3),
+(4, 'DAB', 0, '1', '6', 4),
+(5, 'DAB', 0, '1', '6', 5),
+(6, 'DAB', 0, '1', '6', 6),
+(7, 'PAB', 2, '3', '2', 7),
+(8, 'PAB', 0, '3', '2', 8),
+(9, 'PAB', 0, '3', '6', 9),
+(10, 'SAB', 0, '6', '3', 10),
+(11, 'SAB', 0, '6', '3', 11),
+(12, 'SAB', 0, '6', '3', 12),
+(13, 'SAB', 0, '6', '3', 13),
+(14, 'SAB', 2, '6', '4', 14),
+(15, 'PROTECTOR', 0, '6', NULL, 15),
+(16, 'CAB', 0, '6', '7', 16),
+(17, 'CAB', 0, '6', '7', 17),
+(18, 'KAB', 0, '6', '1', 18),
+(19, 'KAB', 0, '6', '1', 19),
+(20, 'PAB', 0, '3', '2', 20),
+(21, 'PAB', 0, '3', '2', 21),
+(22, 'CAB', 1, '6', '7', 22),
+(23, 'CAB', 1, '6', '7', 23),
+(24, 'PAB', 2, '3', '2', 24),
+(25, 'PAB', 2, '3', '2', 25);
+
+-- --------------------------------------------------------
+
+--
+-- 테이블로 내보낸 뷰 `PRODUCTS_INVENTORY`의 구조
+--
+DROP TABLE IF EXISTS `PRODUCTS_INVENTORY`;
+CREATE TABLE`PRODUCTS_INVENTORY`(
+    `NO` int(11) NOT NULL DEFAULT '0',
+    `PRODUCT_CODE` varchar(50) COLLATE utf8_general_ci DEFAULT NULL,
+    `CAR` varchar(30) COLLATE utf8_general_ci DEFAULT NULL,
+    `LOCATION` varchar(30) COLLATE utf8_general_ci NOT NULL,
+    `PRODUCT_NAME` varchar(50) COLLATE utf8_general_ci DEFAULT NULL,
+    `PRODUCT_FULLNAME` varchar(50) COLLATE utf8_general_ci NOT NULL
+);
+
+-- --------------------------------------------------------
+
+--
+-- 테이블로 내보낸 뷰 `WorkerByDateView`의 구조
+--
+DROP TABLE IF EXISTS `WorkerByDateView`;
+CREATE TABLE`WorkerByDateView`(
+    `NO` int(11) NOT NULL DEFAULT '0',
+    `NAME` varchar(20) COLLATE utf8_general_ci NOT NULL,
+    `DATE` date DEFAULT NULL
+);
+
+-- --------------------------------------------------------
+
+--
+-- 테이블로 내보낸 뷰 `WORKERS_DATE_VIEW`의 구조
+--
+DROP TABLE IF EXISTS `WORKERS_DATE_VIEW`;
+CREATE TABLE`WORKERS_DATE_VIEW`(
+    `WorkerCountNo` int(11) NOT NULL DEFAULT '0',
+    `WorkerNames` mediumtext COLLATE utf8_general_ci DEFAULT NULL,
+    `WORKER_COUNT` int(10) NOT NULL,
+    `DATE` date DEFAULT NULL
+);
+
+-- --------------------------------------------------------
+
+--
+-- 테이블로 내보낸 뷰 `WorkingPartProductsWondanView`의 구조
+--
+DROP TABLE IF EXISTS `WorkingPartProductsWondanView`;
+CREATE TABLE`WorkingPartProductsWondanView`(
+    `WorkingPartNo` int(11) NOT NULL DEFAULT '0',
+    `ASSY_PART_NAME` varchar(30) COLLATE utf8_general_ci DEFAULT NULL,
+    `WONDAN_NAME` varchar(10) COLLATE utf8_general_ci DEFAULT NULL,
+    `PRODUCT_CODE` int(11) NOT NULL,
+    `ProductCode` varchar(50) COLLATE utf8_general_ci DEFAULT NULL,
+    `CAR` varchar(30) COLLATE utf8_general_ci DEFAULT NULL,
+    `LOCATION` varchar(30) COLLATE utf8_general_ci NOT NULL,
+    `COMPANY` varchar(30) COLLATE utf8_general_ci DEFAULT NULL,
+    `PRODUCT_NAME` varchar(50) COLLATE utf8_general_ci DEFAULT NULL,
+    `PRODUCT_BARCODE` varchar(50) COLLATE utf8_general_ci DEFAULT NULL,
+    `BARCODE_NO` varchar(30) COLLATE utf8_general_ci DEFAULT NULL,
+    `BARCODE_REV` varchar(30) COLLATE utf8_general_ci DEFAULT NULL,
+    `PRODUCT_CODE_NAME` varchar(30) COLLATE utf8_general_ci NOT NULL,
+    `PRODUCT_PART01` varchar(30) COLLATE utf8_general_ci NOT NULL,
+    `PRODUCT_FULLNAME` varchar(50) COLLATE utf8_general_ci NOT NULL,
+    `PRODUCT_DESC01` varchar(30) COLLATE utf8_general_ci NOT NULL,
+    `PRODUCT_DESC02` varchar(30) COLLATE utf8_general_ci NOT NULL,
+    `PRODUCT_DESC03` varchar(30) COLLATE utf8_general_ci NOT NULL,
+    `PRODUCT_PART` varchar(30) COLLATE utf8_general_ci DEFAULT NULL,
+    `CERT_DATE` varchar(30) COLLATE utf8_general_ci DEFAULT NULL,
+    `CERTIFY` int(11) DEFAULT NULL,
+    `WondanName` varchar(50) COLLATE utf8_general_ci NOT NULL,
+    `BUPUM_NO` varchar(50) COLLATE utf8_general_ci NOT NULL,
+    `SUPPLAY` varchar(50) COLLATE utf8_general_ci DEFAULT NULL,
+    `WONDAN_BARCODE` varchar(50) COLLATE utf8_general_ci DEFAULT NULL
+);
+
+-- --------------------------------------------------------
+
+--
+-- 테이블로 내보낸 뷰 `WorkingPartProductsWondanViewTable`의 구조
+--
+DROP TABLE IF EXISTS `WorkingPartProductsWondanViewTable`;
+CREATE TABLE`WorkingPartProductsWondanViewTable`(
+    `WorkingPartNo` int(11) NOT NULL DEFAULT '0',
+    `ASSY_PART_NAME` varchar(30) COLLATE utf8_general_ci DEFAULT NULL,
+    `WONDAN_NAME` varchar(10) COLLATE utf8_general_ci DEFAULT NULL,
+    `PRODUCT_CODE` int(11) NOT NULL,
+    `ProductCode` varchar(50) COLLATE utf8_general_ci DEFAULT NULL,
+    `CAR` varchar(30) COLLATE utf8_general_ci DEFAULT NULL,
+    `LOCATION` varchar(30) COLLATE utf8_general_ci NOT NULL,
+    `COMPANY` varchar(30) COLLATE utf8_general_ci DEFAULT NULL,
+    `PRODUCT_NAME` varchar(50) COLLATE utf8_general_ci DEFAULT NULL,
+    `PRODUCT_BARCODE` varchar(50) COLLATE utf8_general_ci DEFAULT NULL,
+    `BARCODE_NO` varchar(30) COLLATE utf8_general_ci DEFAULT NULL,
+    `BARCODE_REV` varchar(30) COLLATE utf8_general_ci DEFAULT NULL,
+    `PRODUCT_CODE_NAME` varchar(30) COLLATE utf8_general_ci NOT NULL,
+    `PRODUCT_PART01` varchar(30) COLLATE utf8_general_ci NOT NULL,
+    `PRODUCT_FULLNAME` varchar(50) COLLATE utf8_general_ci NOT NULL,
+    `PRODUCT_DESC01` varchar(30) COLLATE utf8_general_ci NOT NULL,
+    `PRODUCT_DESC02` varchar(30) COLLATE utf8_general_ci NOT NULL,
+    `PRODUCT_DESC03` varchar(30) COLLATE utf8_general_ci NOT NULL,
+    `PRODUCT_PART` varchar(30) COLLATE utf8_general_ci DEFAULT NULL,
+    `CERT_DATE` varchar(30) COLLATE utf8_general_ci DEFAULT NULL,
+    `CERTIFY` int(11) DEFAULT NULL,
+    `WondanName` varchar(50) COLLATE utf8_general_ci NOT NULL,
+    `BUPUM_NO` varchar(50) COLLATE utf8_general_ci NOT NULL,
+    `SUPPLAY` varchar(50) COLLATE utf8_general_ci DEFAULT NULL,
+    `WONDAN_BARCODE` varchar(50) COLLATE utf8_general_ci DEFAULT NULL
+);
+
+--
+-- 덤프된 테이블의 인덱스
+--
+
+--
+-- 테이블의 인덱스 `ACCOUNT`
+--
+ALTER TABLE `ACCOUNT`
+  ADD PRIMARY KEY (`NO`);
+
+--
+-- 테이블의 인덱스 `BARCODE_COUNT`
+--
+ALTER TABLE `BARCODE_COUNT`
+  ADD PRIMARY KEY (`NO`),
+  ADD UNIQUE KEY `PRODUCT_BARCODE` (`PRODUCT_CODE`),
+  ADD KEY `PRODUCT_CODE` (`PRODUCT_CODE`);
+
+--
+-- 테이블의 인덱스 `BOX`
+--
+ALTER TABLE `BOX`
+  ADD PRIMARY KEY (`NO`);
+
+--
+-- 테이블의 인덱스 `CHAR_DIM`
+--
+ALTER TABLE `CHAR_DIM`
+  ADD PRIMARY KEY (`NO`);
+
+--
+-- 테이블의 인덱스 `DELIVERY`
+--
+ALTER TABLE `DELIVERY`
+  ADD PRIMARY KEY (`NO`);
+
+--
+-- 테이블의 인덱스 `INVENTORY`
+--
+ALTER TABLE `INVENTORY`
+  ADD PRIMARY KEY (`NO`),
+  ADD UNIQUE KEY `PRODUCT_NO` (`PRODUCT_NO`);
+
+--
+-- 테이블의 인덱스 `JAEDAN`
+--
+ALTER TABLE `JAEDAN`
+  ADD PRIMARY KEY (`NO`);
+
+--
+-- 테이블의 인덱스 `PROCESS_CHART`
+--
+ALTER TABLE `PROCESS_CHART`
+  ADD PRIMARY KEY (`NO`);
+
+--
+-- 테이블의 인덱스 `PRODUCTION`
+--
+ALTER TABLE `PRODUCTION`
+  ADD PRIMARY KEY (`NO`);
+
+--
+-- 테이블의 인덱스 `PRODUCTS`
+--
+ALTER TABLE `PRODUCTS`
+  ADD PRIMARY KEY (`NO`);
+
+--
+-- 테이블의 인덱스 `SCANNED_BARCODE`
+--
+ALTER TABLE `SCANNED_BARCODE`
+  ADD PRIMARY KEY (`NO`),
+  ADD UNIQUE KEY `BARCODE` (`BARCODE`);
+
+--
+-- 테이블의 인덱스 `STOCK`
+--
+ALTER TABLE `STOCK`
+  ADD PRIMARY KEY (`NO`);
+
+--
+-- 테이블의 인덱스 `WONDAN`
+--
+ALTER TABLE `WONDAN`
+  ADD PRIMARY KEY (`NO`),
+  ADD UNIQUE KEY `WONDAN_CODE` (`WONDAN_NAME`);
+
+--
+-- 테이블의 인덱스 `WONDAN_STORE`
+--
+ALTER TABLE `WONDAN_STORE`
+  ADD PRIMARY KEY (`NO`),
+  ADD UNIQUE KEY `LOT_NO` (`LOT_NO`),
+  ADD KEY `fk_WONDAN_CODE` (`WONDAN_CODE`);
+
+--
+-- 테이블의 인덱스 `WORKERS`
+--
+ALTER TABLE `WORKERS`
+  ADD PRIMARY KEY (`NO`);
+
+--
+-- 테이블의 인덱스 `WORKER_COUNT`
+--
+ALTER TABLE `WORKER_COUNT`
+  ADD PRIMARY KEY (`NO`);
+
+--
+-- 테이블의 인덱스 `WORKER_SCHEDULE`
+--
+ALTER TABLE `WORKER_SCHEDULE`
+  ADD PRIMARY KEY (`ID`),
+  ADD KEY `WORKER_NO` (`WORKER_NO`);
+
+--
+-- 테이블의 인덱스 `WORKING_ORDER`
+--
+ALTER TABLE `WORKING_ORDER`
+  ADD PRIMARY KEY (`NO`);
+
+--
+-- 테이블의 인덱스 `WORKING_PART`
+--
+ALTER TABLE `WORKING_PART`
+  ADD PRIMARY KEY (`NO`);
+
+--
+-- 덤프된 테이블의 AUTO_INCREMENT
+--
+
+--
+-- 테이블의 AUTO_INCREMENT `ACCOUNT`
+--
+ALTER TABLE `ACCOUNT`
+  MODIFY `NO` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
+
+--
+-- 테이블의 AUTO_INCREMENT `BARCODE_COUNT`
+--
+ALTER TABLE `BARCODE_COUNT`
+  MODIFY `NO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=50;
+
+--
+-- 테이블의 AUTO_INCREMENT `BOX`
+--
+ALTER TABLE `BOX`
+  MODIFY `NO` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- 테이블의 AUTO_INCREMENT `DELIVERY`
+--
+ALTER TABLE `DELIVERY`
+  MODIFY `NO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
+-- 테이블의 AUTO_INCREMENT `INVENTORY`
+--
+ALTER TABLE `INVENTORY`
+  MODIFY `NO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- 테이블의 AUTO_INCREMENT `JAEDAN`
+--
+ALTER TABLE `JAEDAN`
+  MODIFY `NO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=42;
+
+--
+-- 테이블의 AUTO_INCREMENT `PROCESS_CHART`
+--
+ALTER TABLE `PROCESS_CHART`
+  MODIFY `NO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- 테이블의 AUTO_INCREMENT `PRODUCTION`
+--
+ALTER TABLE `PRODUCTION`
+  MODIFY `NO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+
+--
+-- 테이블의 AUTO_INCREMENT `PRODUCTS`
+--
+ALTER TABLE `PRODUCTS`
+  MODIFY `NO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+
+--
+-- 테이블의 AUTO_INCREMENT `SCANNED_BARCODE`
+--
+ALTER TABLE `SCANNED_BARCODE`
+  MODIFY `NO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=165;
+
+--
+-- 테이블의 AUTO_INCREMENT `STOCK`
+--
+ALTER TABLE `STOCK`
+  MODIFY `NO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+
+--
+-- 테이블의 AUTO_INCREMENT `WONDAN`
+--
+ALTER TABLE `WONDAN`
+  MODIFY `NO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- 테이블의 AUTO_INCREMENT `WONDAN_STORE`
+--
+ALTER TABLE `WONDAN_STORE`
+  MODIFY `NO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
+
+--
+-- 테이블의 AUTO_INCREMENT `WORKERS`
+--
+ALTER TABLE `WORKERS`
+  MODIFY `NO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+
+--
+-- 테이블의 AUTO_INCREMENT `WORKER_COUNT`
+--
+ALTER TABLE `WORKER_COUNT`
+  MODIFY `NO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=58;
+
+--
+-- 테이블의 AUTO_INCREMENT `WORKER_SCHEDULE`
+--
+ALTER TABLE `WORKER_SCHEDULE`
+  MODIFY `ID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+
+--
+-- 테이블의 AUTO_INCREMENT `WORKING_ORDER`
+--
+ALTER TABLE `WORKING_ORDER`
+  MODIFY `NO` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=54;
+
+--
+-- 테이블의 AUTO_INCREMENT `WORKING_PART`
+--
+ALTER TABLE `WORKING_PART`
+  MODIFY `NO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+SET FOREIGN_KEY_CHECKS=1;
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
