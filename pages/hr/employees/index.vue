@@ -4,8 +4,8 @@
       <div class="col-12">
         <!-- 페이지 헤더 -->
         <div class="d-flex justify-content-between align-items-center mb-4">
-          <h2>사원 관리</h2>
-          <NuxtLink to="/hr/employees/create" class="btn btn-primary">
+          <h5>사원 정보</h5>
+          <NuxtLink to="/hr/employees/create" class="btn btn-sm btn-warning text-white">
             신규 사원 등록
           </NuxtLink>
         </div>
@@ -95,14 +95,14 @@
                       <div class="btn-group">
                         <button 
                           @click="editEmployee(employee)"
-                          class="btn btn-sm btn-outline-primary"
+                          class="btn btn-sm btn-outline-warning"
                         >
                           수정
                         </button>
                         <button 
                           v-if="employee.EMPLOYEES_STATUS === '재직'"
                           @click="updateStatus(employee.EMPLOYEE_ID, '퇴사')"
-                          class="btn btn-sm btn-outline-danger"
+                          class="btn btn-sm btn-outline-success"
                         >
                           퇴사
                         </button>
@@ -117,7 +117,7 @@
             </div>
 
             <!-- 페이지네이션 -->
-            <div v-if="totalItems > 0" class="d-flex justify-content-center mt-3">
+            <!-- <div v-if="totalItems > 0" class="d-flex justify-content-center mt-3">
               <nav aria-label="Page navigation">
                 <ul class="pagination">
                   <li class="page-item" :class="{ disabled: currentPage === 1 }">
@@ -136,7 +136,15 @@
                   </li>
                 </ul>
               </nav>
-            </div>
+            </div> -->
+
+            <Pagination
+                v-if="totalPages > 1"
+                :current-page="currentPage"
+                :total-pages="totalPages"
+                @page-change="handlePageChange"
+              />
+
           </div>
         </div>
       </div>
@@ -145,8 +153,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref,computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import Pagination from '~/components/common/Pagination.vue';
 
 const router = useRouter();
 
@@ -155,6 +164,13 @@ const employees = ref([]);
 const totalItems = ref(0);
 const currentPage = ref(1);
 const itemsPerPage = ref(10);
+// 총 페이지 수 계산
+const totalPages = computed(() => Math.ceil(totalItems.value / itemsPerPage));
+
+// 페이지 변경 핸들러
+const handlePageChange = async (page) => {
+  await fetchEmployees();
+};
 const searchQuery = ref({
   name: '',
   employeeId: '',
@@ -162,9 +178,20 @@ const searchQuery = ref({
 });
 
 // 직원 목록 조회
+// const fetchEmployees = async () => {
+//   try {
+//     const response = await fetch(`/api/hr/employeesList?page=${currentPage.value}&limit=${itemsPerPage}`);
+//     if (!response.ok) throw new Error('직원 목록 조회 실패');
+//     const data = await response.json();
+//     employees.value = data.data;
+//     totalItems.value = data.total; // 전체 아이템 수 업데이트
+//   } catch (error) {
+//     console.error('직원 목록 조회 오류:', error);
+//   }
+// };
+
 const fetchEmployees = async () => {
   try {
-    console.log('직원 목록 조회 시작');
     const params = new URLSearchParams({
       page: currentPage.value.toString(),
       limit: itemsPerPage.value.toString(),
@@ -173,21 +200,13 @@ const fetchEmployees = async () => {
       status: searchQuery.value.status
     });
 
-    console.log('조회 파라미터:', Object.fromEntries(params));
-
-    const response = await fetch(`/api/hr/employees/list?${params}`);
-    if (!response.ok) {
-      throw new Error('서버 응답 오류');
-    }
-
+    const response = await fetch(`/api/hr/employeesList?${params}`);
+    if (!response.ok) throw new Error('직원 목록 조회 실패');
     const data = await response.json();
-    console.log('직원 목록 조회 결과:', data);
-
-    employees.value = data.employees || [];
-    totalItems.value = data.total || 0;
+    employees.value = data.data;
+    totalItems.value = data.total;
   } catch (error) {
     console.error('직원 목록 조회 오류:', error);
-    alert('직원 목록을 불러오는데 실패했습니다.');
   }
 };
 
@@ -199,11 +218,11 @@ const searchEmployees = () => {
 };
 
 // 페이지 변경
-const handlePageChange = (page) => {
-  console.log('페이지 변경:', page);
-  currentPage.value = page;
-  fetchEmployees();
-};
+// const handlePageChange = (page) => {
+//   console.log('페이지 변경:', page);
+//   currentPage.value = page;
+//   fetchEmployees();
+// };
 
 // 상태 뱃지 클래스
 const getStatusBadgeClass = (status) => {

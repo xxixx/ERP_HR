@@ -463,3 +463,79 @@ export const getLeaveBalance = async (employeeId: string) => {
       throw error;
     }
   };
+  // 직원 목록 조회
+export const getEmployeesList = async () => {
+  try {
+    console.log('[Model] 직원 목록 조회 쿼리 시작');
+    const query = `
+     SELECT 
+          e.*,
+          d.DEPARTMENT_NAME,
+          j.JOB_TITLE,
+          lb.TOTAL_DAYS,
+          lb.USED_DAYS,
+          lb.REMAINING_DAYS,
+          DATE_FORMAT(e.HIRE_DATE, '%Y-%m-%d') as HIRE_DATE
+        FROM EMPLOYEES e
+        LEFT JOIN DEPARTMENTS d ON e.DEPARTMENT_ID = d.DEPARTMENT_ID
+        LEFT JOIN JOBS j ON e.JOB_ID = j.JOB_ID
+        LEFT JOIN LEAVE_BALANCE lb ON e.EMPLOYEE_ID = lb.EMPLOYEE_ID 
+          AND lb.YEAR = YEAR(CURRENT_DATE())
+        WHERE 1=1
+    `;
+
+    console.log('[Model] 실행 쿼리:', query);
+    return await sql({ query });
+  } catch (error) {
+    console.error('[Model] 직원 목록 조회 쿼리 오류:', error);
+    throw error;
+  }
+};
+
+// 전체 연차 정보 조회
+// export const getLeaveBalances = async () => {
+//   try {
+//     console.log('[Model] 전체 연차 정보 조회 쿼리 시작');
+//     const query = `
+//       SELECT 
+//         lb.*,
+//         e.NAME
+//       FROM LEAVE_BALANCE lb
+//       JOIN EMPLOYEE e ON lb.EMPLOYEE_ID = e.EMPLOYEE_ID
+//       WHERE e.ACTIVE_YN = 'Y'
+//       ORDER BY e.NAME, lb.YEAR DESC
+//     `;
+
+//     console.log('[Model] 실행 쿼리:', query);
+//     return await sql({ query });
+//   } catch (error) {
+//     console.error('[Model] 전체 연차 정보 조회 쿼리 오류:', error);
+//     throw error;
+//   }
+// };
+
+// 전체 연차 정보 조회
+export const getLeaveBalances = async () => {
+  try {
+    console.log('[Model] 전체 연차 정보 조회 쿼리 시작');
+    const query = `
+      SELECT 
+        lb.EMPLOYEE_ID,
+        e.FULL_NAME as NAME,
+        YEAR(CURRENT_DATE()) as YEAR,
+        lb.TOTAL_DAYS,
+        lb.USED_DAYS,
+        lb.REMAINING_DAYS
+      FROM LEAVE_BALANCE lb
+      JOIN EMPLOYEES e ON lb.EMPLOYEE_ID = e.EMPLOYEE_ID
+      WHERE e.EMPLOYEES_STATUS = '재직'
+      ORDER BY e.FULL_NAME, YEAR DESC
+    `;
+
+    console.log('[Model] 실행 쿼리:', query);
+    return await sql({ query });
+  } catch (error) {
+    console.error('[Model] 전체 연차 정보 조회 쿼리 오류:', error);
+    throw error;
+  }
+};

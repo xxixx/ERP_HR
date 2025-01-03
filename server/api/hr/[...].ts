@@ -40,5 +40,43 @@ router.post('/leave/request', defineEventHandler(hrCtrl.requestLeave));
 
 // 연차 상태 업데이트
 router.put('/leave/status', defineEventHandler(hrCtrl.updateLeaveStatus));
+//연차 초기화
+router.post('/leave/initialize', defineEventHandler(async (event) => {
+    try {
+      const body = await readBody(event);
+      const result = await hrCtrl.initializeLeaveBalance(body);
+      return { success: true, data: result };
+    } catch (error) {
+      throw createError({
+        statusCode: 500,
+        statusMessage: error instanceof Error ? error.message : 'Failed to initialize leave balance'
+      });
+    }
+  }));
 
+  // 직원 목록 조회
+router.get('/employeesList', defineEventHandler(async () => {
+    try {
+      const result = await hrCtrl.getEmployeesList();
+      return { success: true, data: result };
+    } catch (error) {
+      throw createError({
+        statusCode: 500,
+        statusMessage: error instanceof Error ? error.message : 'Failed to fetch employees'
+      });
+    }
+  }));
+  
+  // 전체 연차 정보 조회
+  router.get('/leave/balances', defineEventHandler(async () => {
+    try {
+      const result = await hrCtrl.getLeaveBalances();
+      return { success: true, data: result };
+    } catch (error) {
+      throw createError({
+        statusCode: 500,
+        statusMessage: error instanceof Error ? error.message : 'Failed to fetch leave balances'
+      });
+    }
+  }));
 export default useBase('/api/hr', router.handler);

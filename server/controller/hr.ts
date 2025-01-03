@@ -387,3 +387,63 @@ export const getLeaveBalance = async (event: H3Event) => {
     });
   }
 };
+//연차 초기화
+export const initializeLeaveBalance = async (data: any) => {
+  console.log('[Controller] 연차 초기화 시작:', data);
+  try {
+    await HRModel.initializeLeaveBalance(data);
+    return { message: '연차가 성공적으로 초기화되었습니다.' };
+  } catch (error) {
+    console.error('[Controller] 연차 초기화 오류:', error);
+    throw error;
+  }
+};
+// 직원 목록 조회
+export const getEmployeesList = async () => {
+  console.log('[Controller] 직원 목록 조회 시작');
+  try {
+    const result = await HRModel.getEmployeesList();
+    return result;
+  } catch (error) {
+    console.error('[Controller] 직원 목록 조회 오류:', error);
+    throw error;
+  }
+};
+
+// 전체 연차 정보 조회
+// 전체 연차 정보 조회
+// export const getLeaveBalances = async () => {
+//   try {
+//     console.log('[Model] 전체 연차 정보 조회 쿼리 시작');
+//     const query = `
+//       SELECT 
+//         lb.EMPLOYEE_ID,
+//         e.FULL_NAME as NAME,
+//         YEAR(CURRENT_DATE()) as YEAR,
+//         lb.TOTAL_DAYS,
+//         lb.USED_DAYS,
+//         lb.REMAINING_DAYS
+//       FROM LEAVE_BALANCE lb
+//       JOIN EMPLOYEES e ON lb.EMPLOYEE_ID = e.EMPLOYEE_ID
+//       WHERE e.EMPLOYEES_STATUS = '재직'
+//       ORDER BY e.FULL_NAME, YEAR DESC
+//     `;
+
+//     console.log('[Model] 실행 쿼리:', query);
+//     return await sql({ query });
+//   } catch (error) {
+//     console.error('[Model] 전체 연차 정보 조회 쿼리 오류:', error);
+//     throw error;
+//   }
+// };
+// 전체 연차 정보 조회
+export const getLeaveBalances = async () => {
+  console.log('[Controller] 전체 연차 정보 조회 시작');
+  try {
+    const result = await HRModel.getLeaveBalances();
+    return result;
+  } catch (error) {
+    console.error('[Controller] 전체 연차 정보 조회 오류:', error);
+    throw error;
+  }
+};

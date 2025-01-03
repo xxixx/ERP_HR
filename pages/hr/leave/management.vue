@@ -4,7 +4,7 @@
         <div class="col-12">
           <!-- 페이지 헤더 -->
           <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>연차 관리</h2>
+            <h5>연차 관리</h5>
           </div>
   
           <!-- 검색 영역 -->
@@ -69,7 +69,7 @@
                       <td>
                         <button 
                           @click="openLeaveRegistration(employee)"
-                          class="btn btn-sm btn-primary"
+                          class="btn btn-sm btn-secondary"
                           :disabled="!employee.REMAINING_DAYS"
                         >
                           연차 등록
