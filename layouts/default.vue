@@ -90,8 +90,11 @@
             </ul>
           </li>
           <li class="borderbox">
-            <a class="nav-link text-white" @click="toggleMenu('menu9')" href="#">사원관리</a>
-            <ul class="menu" v-show="isMenuVisible('menu9')"> <!-- 대메뉴2 하위 메뉴 보이기 -->
+            <a class="nav-link text-white" @click="toggleMenu('menu11')" href="#">인사
+              관리</a>
+            <ul class="menu" v-show="isMenuVisible('menu11')"> <!-- 대메뉴2 하위 메뉴 보이기 -->
+              <li><NuxtLink to="/hr/information/department">부서관리</NuxtLink></li>
+              <li><NuxtLink to="/hr/information/jobGrade">직급관리</NuxtLink></li>
               <li><NuxtLink to="/hr/employees/">사원관리</NuxtLink></li>
               <li><NuxtLink to="/hr/leave/management/">연차관리</NuxtLink></li>
               
@@ -153,7 +156,7 @@ import { usePageStore } from '~/store/pageStore';
 const pageStore = usePageStore();
 
 //메뉴 컨트롤
-const menuVisibility = ref({ menu1: false, menu2: false,menu3: false,menu4: false,menu5: false,menu6: false,menu7: false,menu8: false,menu9: false ,menu10: false}); // 각 메뉴의 가시성 상태 저장
+const menuVisibility = ref({ menu1: false, menu2: false,menu3: false,menu4: false,menu5: false,menu6: false,menu7: false,menu8: false,menu9: false ,menu11: false}); // 각 메뉴의 가시성 상태 저장
 
 const toggleMenu = (menu) => {
   // 클릭한 메뉴의 가시성을 토글하고 다른 메뉴는 숨김

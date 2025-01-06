@@ -309,7 +309,127 @@ export const getJobs = async () => {
     throw error;
   }
 };
+// 부서 추가
+export const createDepartment = async (department: any) => {
+  try {
+    console.log('[Model] 부서 추가 쿼리 시작');
+    const query = `
+      INSERT INTO DEPARTMENTS (
+        DEPARTMENT_NAME,
+        MANAGER_ID,
+        LOCATION,
+        CREATED_AT,
+        UPDATED_AT
+      ) VALUES (?, ?, ?, NOW(), NOW())
+    `;
+    const values = [
+      department.DEPARTMENT_NAME,
+      department.MANAGER_ID || null,
+      department.LOCATION
+    ];
 
+    console.log('[Model] 실행 쿼리:', query);
+    console.log('[Model] 쿼리 파라미터:', values);
+
+    const result = await sql({ query, values });
+    return result;
+  } catch (error) {
+    console.error('[Model] 부서 추가 쿼리 오류:', error);
+    throw error;
+  }
+};
+
+// 부서 수정
+export const updateDepartment = async (id: string, department: any) => {
+  try {
+    console.log('[Model] 부서 수정 쿼리 시작');
+    const query = `
+      UPDATE DEPARTMENTS
+      SET
+        DEPARTMENT_NAME = ?,
+        MANAGER_ID = ?,
+        LOCATION = ?,
+        UPDATED_AT = NOW()
+      WHERE DEPARTMENT_ID = ?
+    `;
+    const values = [
+      department.DEPARTMENT_NAME,
+      department.MANAGER_ID || null,
+      department.LOCATION,
+      id
+    ];
+
+    console.log('[Model] 실행 쿼리:', query);
+    console.log('[Model] 쿼리 파라미터:', values);
+
+    const result = await sql({ query, values });
+    return result;
+  } catch (error) {
+    console.error('[Model] 부서 수정 쿼리 오류:', error);
+    throw error;
+  }
+};
+
+// 직급 추가
+export const createJob = async (job: any) => {
+  try {
+    console.log('[Model] 직급 추가 쿼리 시작');
+    const query = `
+      INSERT INTO JOBS (
+        JOB_TITLE,
+        MIN_SALARY,
+        MAX_SALARY,
+        CREATED_AT,
+        UPDATED_AT
+      ) VALUES (?, ?, ?, NOW(), NOW())
+    `;
+    const values = [
+      job.JOB_TITLE,
+      job.MIN_SALARY,
+      job.MAX_SALARY
+    ];
+
+    console.log('[Model] 실행 쿼리:', query);
+    console.log('[Model] 쿼리 파라미터:', values);
+
+    const result = await sql({ query, values });
+    return result;
+  } catch (error) {
+    console.error('[Model] 직급 추가 쿼리 오류:', error);
+    throw error;
+  }
+};
+
+// 직급 수정
+export const updateJob = async (id: string, job: any) => {
+  try {
+    console.log('[Model] 직급 수정 쿼리 시작');
+    const query = `
+      UPDATE JOBS
+      SET
+        JOB_TITLE = ?,
+        MIN_SALARY = ?,
+        MAX_SALARY = ?,
+        UPDATED_AT = NOW()
+      WHERE JOB_ID = ?
+    `;
+    const values = [
+      job.JOB_TITLE,
+      job.MIN_SALARY,
+      job.MAX_SALARY,
+      id
+    ];
+
+    console.log('[Model] 실행 쿼리:', query);
+    console.log('[Model] 쿼리 파라미터:', values);
+
+    const result = await sql({ query, values });
+    return result;
+  } catch (error) {
+    console.error('[Model] 직급 수정 쿼리 오류:', error);
+    throw error;
+  }
+};
 /**
  * 연차 관리 모델
  */

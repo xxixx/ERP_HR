@@ -26,12 +26,22 @@ router.get('/employees/managers', defineEventHandler(hrCtrl.getManagers));
 /**
  * 부서/직급 관리 API
  */
-// 부서 목록 조회
-router.get('/departments', defineEventHandler(hrCtrl.getDepartments));
 
 // 직급 목록 조회
 router.get('/jobs', defineEventHandler(hrCtrl.getJobs));
+// 부서 목록 조회
+router.get('/departments', defineEventHandler(hrCtrl.getDepartments));
+// 부서 추가
+router.post('/departments', defineEventHandler(hrCtrl.createDepartment));
+// 부서 수정
+router.put('/departments/:id', defineEventHandler(hrCtrl.updateDepartment));
 
+
+
+// 직급 추가
+router.post('/jobs', defineEventHandler(hrCtrl.createJob));
+// 직급 수정
+router.put('/jobs/:id', defineEventHandler(hrCtrl.updateJob));
 /**
  * 연차 관리 API
  */

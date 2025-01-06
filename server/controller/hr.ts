@@ -270,6 +270,115 @@ export const getJobs = async (event: H3Event) => {
     });
   }
 };
+// 부서 추가
+export const createDepartment = async (event: H3Event) => {
+  try {
+    console.log('[Controller] 부서 추가 시작');
+    const body = await readBody(event);
+    
+    // 필수 필드 검증
+    const requiredFields = ['DEPARTMENT_NAME', 'LOCATION'];
+    for (const field of requiredFields) {
+      if (!body[field]) {
+        throw createError({
+          statusCode: 400,
+          message: `${field} 필드는 필수입니다.`
+        });
+      }
+    }
+
+    const result = await HRModel.createDepartment(body);
+    console.log('[Controller] 부서 추가 완료:', result);
+    return result;
+  } catch (error) {
+    console.error('[Controller] 부서 추가 오류:', error);
+    throw createError({
+      statusCode: 500,
+      message: '부서 추가 중 오류가 발생했습니다.'
+    });
+  }
+};
+
+// 부서 수정
+export const updateDepartment = async (event: H3Event) => {
+  try {
+    console.log('[Controller] 부서 수정 시작');
+    const body = await readBody(event);
+    const id = event.context.params?.id;
+    
+    if (!id) {
+      throw createError({
+        statusCode: 400,
+        message: '부서 ID가 필요합니다.'
+      });
+    }
+
+    const result = await HRModel.updateDepartment(id, body);
+    console.log('[Controller] 부서 수정 완료:', result);
+    return result;
+  } catch (error) {
+    console.error('[Controller] 부서 수정 오류:', error);
+    throw createError({
+      statusCode: 500,
+      message: '부서 수정 중 오류가 발생했습니다.'
+    });
+  }
+};
+
+// 직급 추가
+export const createJob = async (event: H3Event) => {
+  try {
+    console.log('[Controller] 직급 추가 시작');
+    const body = await readBody(event);
+    
+    // 필수 필드 검증
+    const requiredFields = ['JOB_TITLE', 'MIN_SALARY', 'MAX_SALARY'];
+    for (const field of requiredFields) {
+      if (!body[field]) {
+        throw createError({
+          statusCode: 400,
+          message: `${field} 필드는 필수입니다.`
+        });
+      }
+    }
+
+    const result = await HRModel.createJob(body);
+    console.log('[Controller] 직급 추가 완료:', result);
+    return result;
+  } catch (error) {
+    console.error('[Controller] 직급 추가 오류:', error);
+    throw createError({
+      statusCode: 500,
+      message: '직급 추가 중 오류가 발생했습니다.'
+    });
+  }
+};
+
+// 직급 수정
+export const updateJob = async (event: H3Event) => {
+  try {
+    console.log('[Controller] 직급 수정 시작');
+    const body = await readBody(event);
+    const id = event.context.params?.id;
+    
+    if (!id) {
+      throw createError({
+        statusCode: 400,
+        message: '직급 ID가 필요합니다.'
+      });
+    }
+
+    const result = await HRModel.updateJob(id, body);
+    console.log('[Controller] 직급 수정 완료:', result);
+    return result;
+  } catch (error) {
+    console.error('[Controller] 직급 수정 오류:', error);
+    throw createError({
+      statusCode: 500,
+      message: '직급 수정 중 오류가 발생했습니다.'
+    });
+  }
+};
 
 /**
  * 연차 관리 컨트롤러
