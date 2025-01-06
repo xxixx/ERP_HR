@@ -1,0 +1,298 @@
+생산관리 프로그램을 만들려하다.
+PM_ERP 디비를 만들고
+products 테이브을 만들고 제작되는 상품의 종류를 등록했다.
+
+상품은 생산 공정은 
+1. 상품의 공정등록 
+
+2.제단 작업등록   공정등록된을 보고  선택하여 재단 작업을 등록한다.
+   재단 작업등록을 하면 공정등록의 상태값을 변경하고 공정등록 목록에서 보이지 않게 된다.
+   공정의 상태는 공정의 진행 상태이다.
+
+3.제단작업등록에는 원단과 날짜와 수량 과 작업등록자 이름이 있어야 한다.
+
+4. 제단 작업
+   제단작업은 작업자가 제단작업록이 되어진것을 확인하고 클릭하여 제단작업이 진행된다.
+   이때  등록된 제단 작업은 상태값을 변경해서 재단 작업등록 목록에는 보이지 않게 한다.
+
+5. 재단완료
+   재단이 완료되면 완료상태클릭하여 완료되었음을 표사ㅣ하게 한다.
+   상태값을 변경하여 재단 완료 상표로 되게하고 재단 작업 목록에서는 보이지 않게 된다.
+
+6. 작업 투입
+   완료된 재단 리스트에서 선택하여 작업투입 상태로 변경하게 한다.
+   작업 투입리스트에 나타나게 된다.
+7. 작업완료
+   작업투입상태에서 작업완료상태로 변경하게 한다.
+   작업완료상태에서는 작업자가 확인하고 클릭하여 작업완료상태로 변경하게 한다.
+   작업완료상태에서는 상태값을 변경하고 작업완료상태로 변경하게 한다.
+
+8.작업이 완료되어 생산 된 상품의 바크도 등록을 한다.
+ 바코드는 등록된 공정의 값을 가져와서 바코드를 생성한다.
+
+ 9. 공정 완료 
+   작업이 완료된 상태의 것은 공정완료 처리를 한다.
+   공정의 상태 값이 변경되어 진행되는 공정리스트에서 보이지 않게 한다.
+
+
+   생산관리 프로그램의 요구사항을 상세히 정리해보겠습니다.
+
+1. PM_ERP 디비 생성
+PM_ERP 데이터베이스를 생성합니다.
+2. Products 테이블 생성
+Products 테이블을 생성하여 제작되는 상품의 종류를 등록합니다.
+3. 상품의 공정 등록
+상품에 대한 공정을 등록합니다.
+4. 제단 작업 등록
+공정 등록된 상품을 선택하여 제단 작업을 등록합니다.
+제단 작업 등록 시 공정 등록의 상태값을 변경하고 공정 등록 목록에서 숨깁니다.
+제단 작업 등록에는 원단, 날짜, 수량, 작업자 이름이 포함되어야 합니다.
+5. 제단 작업 진행
+작업자가 제단 작업을 확인하고 진행합니다.
+등록된 제단 작업은 상태값을 변경하여 목록에서 숨깁니다.
+6. 재단 완료
+재단 작업이 완료되면 완료 상태를 클릭하여 표시합니다.
+상태값을 변경하여 재단 완료 상태로 설정하고 목록에서 숨깁니다.
+7. 작업 투입
+완료된 재단 리스트에서 작업을 선택하여 작업 투입 상태로 변경합니다.
+작업 투입 리스트에 표시됩니다.
+8. 작업 완료
+작업 투입 상태에서 작업 완료 상태로 변경합니다.
+작업 완료 상태에서 작업자가 확인하고 클릭하여 상태를 변경합니다.
+9. 바코드 등록
+작업이 완료되어 생산된 상품에 대한 바코드를 등록합니다.
+등록된 공정의 값을 활용하여 바코드를 생성합니다.
+10. 공정 완료
+작업이 완료된 상품에 대해 공정 완료 처리를 합니다.
+공정의 상태값을 변경하여 진행 중인 공정 리스트에서 숨깁니다.
+위 요구사항을 바탕으로 생산관리 프로그램을 구현할 수 있습니다. 필요한 기능을 순차적으로 구현하여 생산 프로세스를 효율적으로 관리할 수 있도록 설계해야 합니다.
+
+
+Products (상품) 테이블:
+
+상품 ID (Product ID)
+상품명 (Product Name)
+상품 설명 (Product Description)
+...
+Processes (공정) 테이블:
+
+공정 ID (Process ID)
+상품 ID (Product ID, 외래키)
+공정명 (Process Name)
+공정 상태 (Process Status)
+...
+CuttingJobs (제단 작업) 테이블:
+
+제단 작업 ID (Cutting Job ID)
+공정 ID (Process ID, 외래키)
+원단 (Material)
+날짜 (Date)
+수량 (Quantity)
+작업자 이름 (Worker Name)
+제단 작업 상태 (Cutting Job Status)
+...
+Barcode (바코드) 테이블:
+
+바코드 ID (Barcode ID)
+공정 ID (Process ID, 외래키)
+바코드 값 (Barcode Value)
+...
+
+두개의 테이블이있다.
+1. CCREATE TABLE `WONDAN` (
+  `WONDAN_CODE` varchar(50) NOT NULL,
+  `NAME` varchar(50) NOT NULL,
+  `BUPUM_NO` varchar(50) NOT NULL,
+  `SUPPLAY` varchar(50) DEFAULT NULL,
+  `WONDAN_BARCODE` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+INSERT INTO `WONDAN` (`WONDAN_CODE`, `NAME`, `BUPUM_NO`, `SUPPLAY`, `WONDAN_BARCODE`) VALUES
+('49', '420D', '4949UC', NULL, NULL),
+('4K', '420D', 'H24000', NULL, NULL),
+('53', '420D', '5353UC', NULL, NULL),
+('H2', '420D', 'H24000', NULL, NULL),
+('NK', '420D', 'H24000', NULL, NULL),
+('SR', '940D', '940D', '도요보', NULL),
+('UC', '940D', '940D', '도요보', NULL);
+
+ALTER TABLE `WONDAN`
+  ADD UNIQUE KEY `WONDAN_CODE` (`WONDAN_CODE`);
+
+ 2.  CREATE TABLE `WORKING_PART` (
+  `NO` int(11) NOT NULL,
+  `ASSY_PART_NAME` varchar(30) DEFAULT NULL,
+  `JAEDAN_PART_NAME` varchar(30) DEFAULT NULL,
+  `WONDAN_NAME` varchar(10) DEFAULT NULL,
+  `PRODUCT_CODE` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+ALTER TABLE `WORKING_PART`
+  ADD PRIMARY KEY (`NO`);
+
+ALTER TABLE `WORKING_PART`
+  MODIFY `NO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+  이두개의 테이블을 조인하여 view 테이블을 만드는데. WORKING_PART 의 WONDAN_NAME 의 값이  에 WONDAN 테이블의 WONDAN_CODE 의 값과 같은 것을 조인하여 만들어 보세요.
+
+  
+  ==============
+ 세개의 테이블이있다.
+
+1. WORKING_PART 테이블
+ CREATE TABLE `WORKING_PART` (
+  `NO` int(11) NOT NULL,
+  `ASSY_PART_NAME` varchar(30) DEFAULT NULL,
+  `JAEDAN_PART_NAME` varchar(30) DEFAULT NULL,
+  `WONDAN_NAME` varchar(10) DEFAULT NULL,
+  `PRODUCT_CODE` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+INSERT INTO `WORKING_PART` (`NO`, `ASSY_PART_NAME`, `JAEDAN_PART_NAME`, `WONDAN_NAME`, `PRODUCT_CODE`) VALUES
+(1, 'DAB', NULL, 'UC49', 1);
+
+
+ALTER TABLE `WORKING_PART`
+  ADD PRIMARY KEY (`NO`);
+
+ALTER TABLE `WORKING_PART`
+  MODIFY `NO` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+  2. PRODUCTS 테이블
+  REATE TABLE `PRODUCTS` (
+  `NO` int(11) NOT NULL,
+  `PRODUCT_CODE` varchar(50) DEFAULT NULL,
+  `CAR` varchar(30) DEFAULT NULL,
+  `LOCATION` varchar(30) NOT NULL,
+  `COMPANY` varchar(30) DEFAULT NULL,
+  `PRODUCT_NAME` varchar(50) DEFAULT NULL,
+  `PRODUCT_BARCODE` varchar(50) DEFAULT NULL,
+  `BARCODE_NO` varchar(30) DEFAULT NULL,
+  `BARCODE_REV` varchar(30) DEFAULT NULL,
+  `PRODUCT_CODE_NAME` varchar(30) NOT NULL,
+  `PRODUCT_PART01` varchar(30) NOT NULL,
+  `PRODUCT_FULLNAME` varchar(50) NOT NULL,
+  `PRODUCT_DESC01` varchar(30) NOT NULL,
+  `PRODUCT_DESC02` varchar(30) NOT NULL,
+  `PRODUCT_DESC03` varchar(30) NOT NULL,
+  `PRODUCT_PART` varchar(30) DEFAULT NULL,
+  `CERT_DATE` varchar(30) DEFAULT NULL,
+  `CERTIFY` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+3.CREATE TABLE `WONDAN` (
+  `NO` int(11) NOT NULL,
+  `WONDAN_CODE` varchar(50) NOT NULL,
+  `NAME` varchar(50) NOT NULL,
+  `BUPUM_NO` varchar(50) NOT NULL,
+  `SUPPLAY` varchar(50) DEFAULT NULL,
+  `WONDAN_BARCODE` varchar(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+ 을 조인해서 뷰테이블을 만드는데 WORKING_PART 테이블의 WONDAN_NAME 의 값이 WONDAN 테이블의 NO 의 값과 같은 것을 조인하여 만들어 보세요.
+
+
+ <label for="workingPartSelect">품명</label>
+            <select
+              v-model="form.WORKING_PART"
+              id="workingPartSelect"
+              class="form-control border border-success"
+              required
+            >
+              <option value="" disabled selected>품명을 선택하세요</option>
+              <option
+                v-for="part in WORKING_PART"
+                :value="part.ID"
+                :key="part.ID"
+              >
+                <span>{{ part.WorkingPartNo }}</span>
+                <span>{{ part.ID }}</span>
+                <span> [ </span>
+                <span class="mx-2"> {{ part.PRODUCT_NAME }}  | </span>
+                <!-- <span class="mx-2"> {{ part.PRODUCT_CODE }}</span> -->
+                <span class="mx-2"> {{ part.CAR }}</span>
+                <span class="mx-2"> {{ part.LOCATION }}</span>
+                <span> / </span>
+                <span style="margin-right: 10px">
+                  {{ part.PRODUCT_CODE }}</span
+                >
+                <span> ] </span>
+                <span> {{ part.ProductCode }}</span>
+                <span> {{ part.JAEDAN_PART_NAME }}</span>
+                <span> - </span>
+                <span> {{ part.WONDAN_CODE }}</span>
+              </option>
+            </select>
+          </div>
+           에서 
+           const form = reactive({
+               CREATE_DATE: "",
+               WORKING_PART: "",
+               COUNT: "",
+               
+               REG_ACCOUNT: "",
+               });
+
+        form의  WORKING_PART: "",를   <span>{{ part.WorkingPartNo }}</span> 를 아래 insertData 에서 
+
+        if (!form.WORKING_PART.WorkingPartNo) {
+            isValid = false;
+            alertMessage += "품명을 선택해주세요.\n";
+         } 을 올바르게 전송하게 하려면
+
+
+        const insertData = async () => {
+  // 입력값 검증을 위한 플래그 설정
+  let isValid = true;
+  let alertMessage = "";
+
+  //각 입력 필드에 대한 검증
+  if (!form.CREATE_DATE.trim()) {
+    isValid = false;
+    alertMessage += "DATE를 입력해주세요.\n";
+  }
+  //
+  if (!form.WORKING_PART.WorkingPartNo) {
+    isValid = false;
+    alertMessage += "품명을 선택해주세요.\n";
+  }
+
+  const countNumber = Number(form.COUNT);
+  if (!form.COUNT || isNaN(countNumber) || countNumber <= 0) {
+    isValid = false;
+    alertMessage += "수량 을 입력해주세요.\n";
+  }
+
+  if (!form.REG_ACCOUNT && form.REG_ACCOUNT !== 0) {
+    isValid = false;
+    alertMessage += "등록자를 입력해주세요.\n";
+  }
+  // if (!form.REG_ACCOUNT.trim()) {
+  //   isValid = false;
+  //   alertMessage += '등록자를 를 입력해주세요.\n';
+  // }
+
+  try {
+    await $fetch("/api/workOrder/registerOrder", {
+      method: "POST",
+      body: form,
+    });
+    alert("등록되었습니다.");
+    await fetchData();
+    // router.push('/blog');
+  } catch {
+    alert("RECORD error");
+  }
+};
+
+SELECT wo.*, wp.*, a.NAME, a.EMAIL, a.NO as ACCOUNT_NO
+      FROM WORKING_ORDER wo
+      JOIN WORKING_PART wp ON wo.WORKING_PART = wp.NO
+      JOIN ACCOUNT a ON wo.REG_ACCOUNT = a.NO
+      where wo.STATE = 0 
+      에서 WORKING_PART  NO 행의 PRODUCT_CODE 가 PRODUCTS NO 를 보여주게 수정하라
+      
