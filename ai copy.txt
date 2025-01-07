@@ -1,0 +1,186 @@
+<template>
+  <div class="container d-flex justify-content-center">
+    <div class="login">
+      <form @submit.prevent="handleLoginSubmit" style="min-width: 500px;">
+        <img class="mb-4" src="https://png.pngtree.com/png-vector/20191110/ourmid/pngtree-avatar-icon-profile-icon-member-login-vector-isolated-png-image_1978396.jpg" alt="" width="172" height="157">
+        account: {{ accountStore.user  }}
+     
+        <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+        <div class="form-floating my-1">
+          <input type="email" class="form-control" v-model="form.EMAIL" placeholder="name@example.com">
+          <label for="floatingInput">Email address</label>
+        </div>
+        <div class="form-floating">
+          <input type="password" class="form-control" v-model="form.PASSWORD" placeholder="Password">
+          <label for="floatingPassword">Password</label>
+        </div>
+        <button class="btn btn-primary w-100 py-2" type="submit">Sign in</button>
+      </form>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAccountStore } from '~/stores/account';
+
+
+const form = ref({ EMAIL: '', PASSWORD: '' });
+const router = useRouter();
+const accountStore = useAccountStore();
+
+const handleLoginSubmit = async () => {
+  try {
+    const response = await fetch('/api/account/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(form.value)
+    });
+    const data = await response.json();
+    console.log('Login successful data', data);
+
+    if (response.ok) {
+      const token = data.token || data.data;
+      if (!token) {
+        console.error('No token found in response');
+        return;
+      }
+      const user = parseJwt(token);
+      if (user) {
+        console.log('Login successful user', user);
+        accountStore.setUser(user);
+        console.log('Stored user in accountStore:', accountStore.user); // 로그인 후 상태 확인
+        router.push('/');
+      } else {
+        alert('Failed to parse user data from token.');
+      }
+    } else {
+      alert(data.error);
+    }
+  } catch (error) {
+    console.error('Login failed', error);
+  }
+};
+
+const parseJwt = (token: string) => {
+  try {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split('')
+        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+        .join('')
+    );
+    return JSON.parse(jsonPayload);
+  } catch (e) {
+    console.error('Error parsing JWT', e);
+    return null;
+  }
+};
+
+onMounted(() => {
+  const tokenCookie = useCookie('token');
+  const token = tokenCookie.value;
+  if (token) {
+    const user = parseJwt(token);
+    if (user) {
+      accountStore.setUser(user);
+      console.log('User state on mount:', accountStore.user); // 마운트 시 상태 확인
+    } else {
+      accountStore.clearUser();
+    }
+  } else {
+    accountStore.clearUser();
+  }
+});
+</script>
+
+
+JAEDAN_REGIST 테이블 의 WORK_ORDER_NO (23) 는 
+WORKING_ORDER 테이블의 NO (23)  이다.
+WORKING_ORDER 의 NO 행의 WORKING_PART 가 가지는 값(1) 는 
+WORKING_PART 테이블의 ID  (1) 이다.
+WORKING_PART 테이블의 ID 행의 PUMBUN 값을 가지고 오려한다
+쿼리를 만들어라
+
+
+
+
+SELECT jr.NO, jr.CREATE_DATE,jr.WORK_ORDER_NO,jr.COUNT,
+wp.ASSY_PART_NAME,wp.ASSY_SUB_PART_NAME,wp.JAEDAN_PART_NAME, wp.WONDAN_NAME,jr.LOT,wp.PUMBUN
+FROM JAEDAN_REGIST jr
+JOIN WORKING_ORDER wo ON jr.WORK_ORDER_NO = wo.NO
+JOIN WORKING_PART wp ON wo.WORKING_PART = wp.ID
+WHERE jr.WORK_ORDER_NO = 23;
+
+
+라벨프린터
+
+제품의 품명코드와 일년번호를 바코드로 출력하려한다.
+
+router.push({
+      path: '/PRODUCTION/barcode',
+      
+      query: item.PROCESS_CODE
+    }
+  );
+  이전화면에서 전댈받은 item.PROCESS_CODE 을 PRODUCTION 테이블에서 PROCESS_CODE
+  를 검색하고 존재하는 코드이면 바코드를 출력하도록 만들어야 한다.( 코드가 없을경우 존재하지 않는 코드입니다. alert)
+
+화면에서 100개 200개 등을 입력하고 프린터 버튼을 누르면
+PROCESS_CODE 와 일련번호를 합한 값을 출력하는 기능을 만들어야 한다.
+에를들어 PABSR2024061536 + 01 과 같이  PABSR202406153601,
+PABSR202406153602 ....PABSR2024061536100 으로 출력되게 하여야 한다.
+바코드는 큐알 코드로 만들어야 한다.
+코드를 만들어라.
+그리고 바코드가 만일 100 개 만들었다면 추가로 100개 만들경우 일련번호가 이전에 만들었던 일련번호가다음으로 
+출력되게 하여야 한다.
+이럴경우  어떻게 관리하는지 설명을 하고 테이블이나 코드를 만들어야 한다.
+
+WORKERS 테이블에는 NO,NAME 가 있고
+WORKER_COUNT 테이블에는 NO,WORKER_IDS,WORKER_COUNT,DATE 가 있다.
+WORKER_COUNT 테이블에는 행에는 
+45
+1,2,3,4,5,6,7
+13
+2024-08-12
+와 같이 저장되어진다.
+여기서 1,2,3,4,5,6,7 는 WORKERS 테이블에는 NO의 정보이다.
+쿼리를 통해서 
+45
+name1,name2,name3,name4,name5,name6,name7
+13
+2024-08-12
+와 같이 데이터를 가져오고 싶다.
+즉 WORKER_COUNT의 WORKER_IDS 를 WORKERS 의 NO,NAME 을 가져와서 보게하려면?
+
+
+
+const fetchWorkersDate = async () => {
+  try {
+    const response = await $fetch<WorkerModel[]>(`/api/workers/getWorkersAllDate`);
+      workers.value = response.data;
+   
+    isLoading.value = false;
+  } catch (error) {
+    console.error("Error fetching stocks:", error);
+    alert("재고 정보를 가져오는 데 실패했습니다.");
+  }
+};
+로 가져온 데이터의   는  DATE  24-08-10 값과 count 10 와 같은 값을 가진다.
+이데이터를 시각적으로 일자별로 count 를 보여주는 APEXCHARTS 페잊비를 만들어라
+vue3 script setup 형식으로 만들어라.
+
+
+
+import { useBase, createRouter, defineEventHandler } from 'h3';
+import * as working_partCtrl from '~~/server/controller/working_part';
+
+const router = createRouter();
+
+
+router.get('/working_part/getWORKING_PART', defineEventHandler(working_partCtrl.getWORKING_PART));
+
+export default useBase('/api', router.handler);
