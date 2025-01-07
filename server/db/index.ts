@@ -6,7 +6,6 @@ const pool = mysql.createPool({
     port: parseInt(process.env.DB_PORT || '13306'),
     user: process.env.DB_USER || 'erpadmin',
     password: process.env.DB_PASSWORD || 'Elqldjemals@1',
-    // database: process.env.DB_NAME || 'NEW_ERP',
     database: process.env.DB_NAME ,
     waitForConnections: true,
     connectionLimit: 10,
@@ -14,7 +13,8 @@ const pool = mysql.createPool({
     idleTimeout: 60000,
     queueLimit: 0,
     enableKeepAlive: true,
-    keepAliveInitialDelay: 0
+    keepAliveInitialDelay: 0,
+    dateStrings: true  // 날짜를 문자열로 반환
 });
 
 console.log('Database connection configuration:', {

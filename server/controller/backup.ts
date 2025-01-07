@@ -30,12 +30,87 @@ export const createBackup = async (event: H3Event) => {
     const backupPath = path.join(backupDir, backupFileName);
 
     // 테이블 목록 조회
-    const tablesQuery = "SHOW TABLES";
+    const tablesQuery = "SHOW FULL TABLES WHERE Table_type = 'BASE TABLE'";
     const tables = await sql({ query: tablesQuery });
+    
+    // 뷰 목록 조회
+    const viewsQuery = "SHOW FULL TABLES WHERE Table_type = 'VIEW'";
+    const views = await sql({ query: viewsQuery });
+    
+    // 트리거 목록 조회
+    const triggersQuery = "SHOW TRIGGERS";
+    const triggers = await sql({ query: triggersQuery });
     
     let backupContent = '';
     
-    // 각 테이블의 생성 구문과 데이터를 백업
+    // 테이블 의존성 순서 정의
+    const tableOrder = [
+      // 1. 독립 테이블 (다른 테이블을 참조하지 않는 테이블)
+      'BOARD_CATEGORY',
+      'ACCOUNT',
+      'ACCOUNT_POSITION',
+      'ACCOUNT_ROLE',
+      'BACKUP_HISTORY',
+      'CHAR_DIM',
+      'DEFECTIVE_CAT',
+      'BARCODE_COUNT',
+      'BOX',
+      'DAYS_PRODUCTION',
+      'DEPARTMENTS',
+      'JOBS',
+      
+      // 2. 1차 의존 테이블 (독립 테이블만 참조하는 테이블)
+      'BOARD_POST',     // BOARD_CATEGORY, ACCOUNT 참조
+      'DEFECTIVE_DATA', // DEFECTIVE_CAT 참조
+      'EMPLOYEES',      // DEPARTMENTS, JOBS 참조
+      
+      // 3. 2차 의존 테이블 (1차 의존 테이블을 참조하는 테이블)
+      'BOARD_ATTACHMENT', // BOARD_POST 참조
+      'BOARD_COMMENT'    // BOARD_POST, ACCOUNT 참조
+    ];
+    
+    // 정의된 순서의 테이블 먼저 처리
+    for (const orderedTable of tableOrder) {
+      const table = tables.find(t => Object.values(t)[0] === orderedTable);
+      if (table) {
+        const tableName = Object.values(table)[0];
+        console.log('테이블 백업 중 (우선순위):', tableName);
+
+        // 테이블 생성 구문 가져오기
+        const createTableQuery = `SHOW CREATE TABLE ${tableName}`;
+        const createTableResult = await sql({ query: createTableQuery });
+        const createTableSql = createTableResult[0]['Create Table'];
+        
+        backupContent += `DROP TABLE IF EXISTS ${tableName};\n`;
+        backupContent += createTableSql + ';\n\n';
+
+        // 테이블 데이터 백업
+        const selectQuery = `SELECT * FROM ${tableName}`;
+        const rows = await sql({ query: selectQuery });
+        
+        if (rows.length > 0) {
+          const columns = Object.keys(rows[0]);
+          backupContent += `INSERT INTO ${tableName} (${columns.join(', ')}) VALUES\n`;
+          
+          const values = rows.map(row => {
+            const rowValues = columns.map(column => {
+              const value = row[column];
+              if (value === null) return 'NULL';
+              if (typeof value === 'string') return `'${value.replace(/'/g, "''")}'`;
+              return value;
+            });
+            return `(${rowValues.join(', ')})`;
+          }).join(',\n');
+          
+          backupContent += values + ';\n\n';
+        }
+        
+        // 처리된 테이블 제거
+        tables.splice(tables.indexOf(table), 1);
+      }
+    }
+    
+    // 나머지 테이블 처리
     for (const table of tables) {
       const tableName = Object.values(table)[0];
       console.log('테이블 백업 중:', tableName);
@@ -48,8 +123,39 @@ export const createBackup = async (event: H3Event) => {
       backupContent += `DROP TABLE IF EXISTS ${tableName};\n`;
       backupContent += createTableSql + ';\n\n';
 
+      // 테이블의 컬럼 정보 조회
+      const columnsQuery = `SHOW COLUMNS FROM ${tableName}`;
+      const columns = await sql({ query: columnsQuery });
+      
+      // 날짜 타입 컬럼 찾기 및 타입 저장
+      const dateColumns = columns
+        .filter(col => col.Type.toLowerCase().includes('date') || col.Type.toLowerCase().includes('timestamp'))
+        .map(col => ({
+          name: col.Field,
+          type: col.Type.toLowerCase()
+        }));
+
       // 테이블 데이터 가져오기
-      const dataQuery = `SELECT * FROM ${tableName}`;
+      let dataQuery = `SELECT `;
+      
+      // 각 컬럼에 대해 날짜 형식 지정
+      const selectColumns = columns.map(col => {
+        const dateCol = dateColumns.find(dc => dc.name === col.Field);
+        if (dateCol) {
+          if (dateCol.type.includes('timestamp') || dateCol.type.includes('datetime')) {
+            // datetime, timestamp 타입은 YYYY-MM-DD HH:mm:ss 형식으로
+            return `DATE_FORMAT(${col.Field}, '%Y-%m-%d %H:%i:%s') as ${col.Field}`;
+          } else if (dateCol.type.includes('date')) {
+            // date 타입은 YYYY-MM-DD 형식으로
+            return `DATE_FORMAT(${col.Field}, '%Y-%m-%d') as ${col.Field}`;
+          }
+        }
+        return col.Field;
+      });
+      
+      dataQuery += selectColumns.join(', ') + ` FROM ${tableName}`;
+      console.log('데이터 조회 쿼리:', dataQuery);
+      
       const data = await sql({ query: dataQuery });
       
       if (data.length > 0) {
@@ -65,10 +171,40 @@ export const createBackup = async (event: H3Event) => {
           }).join(', ') + ')';
         }).join(',\n');
 
-        if (values) {
+        if (values.length > 0) {
           backupContent += insertHeader + values + ';\n\n';
         }
       }
+    }
+
+    // 뷰 백업
+    console.log('뷰 백업 시작');
+    for (const view of views) {
+      const viewName = Object.values(view)[0];
+      console.log('뷰 백업 중:', viewName);
+
+      // 뷰 생성 구문 가져오기
+      const showViewQuery = `SHOW CREATE VIEW ${viewName}`;
+      const viewResult = await sql({ query: showViewQuery });
+      const createViewSql = viewResult[0]['Create View'];
+
+      backupContent += `DROP VIEW IF EXISTS ${viewName};\n`;
+      backupContent += createViewSql + ';\n\n';
+    }
+
+    // 트리거 백업
+    console.log('트리거 백업 시작');
+    for (const trigger of triggers) {
+      const triggerName = trigger.Trigger;
+      console.log('트리거 백업 중:', triggerName);
+
+      // 트리거 생성 구문 가져오기
+      const showTriggerQuery = `SHOW CREATE TRIGGER ${triggerName}`;
+      const triggerResult = await sql({ query: showTriggerQuery });
+      const createTriggerSql = triggerResult[0]['SQL Original Statement'];
+
+      backupContent += `DROP TRIGGER IF EXISTS ${triggerName};\n`;
+      backupContent += `DELIMITER //\n${createTriggerSql}//\nDELIMITER ;\n\n`;
     }
 
     // 백업 파일 저장
