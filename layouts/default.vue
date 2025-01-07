@@ -106,6 +106,7 @@
               <!-- <li><NuxtLink to="/admin/account">회원관리</NuxtLink></li> -->
               <li><NuxtLink to="/admin/accounts">Accounts</NuxtLink></li>
               <li><NuxtLink to="/board">게시판관리</NuxtLink></li>
+              <li><NuxtLink to="/badmin/system/backup">백업관리</NuxtLink></li>
             </ul>
           </li>
           
@@ -156,7 +157,7 @@ import { usePageStore } from '~/store/pageStore';
 const pageStore = usePageStore();
 
 //메뉴 컨트롤
-const menuVisibility = ref({ menu1: false, menu2: false,menu3: false,menu4: false,menu5: false,menu6: false,menu7: false,menu8: false,menu9: false ,menu11: false}); // 각 메뉴의 가시성 상태 저장
+const menuVisibility = ref({ menu1: false, menu2: false,menu3: false,menu4: false,menu5: false,menu6: false,menu7: false,menu8: false,menu9: false , menu10: false}); // 각 메뉴의 가시성 상태 저장
 
 const toggleMenu = (menu) => {
   // 클릭한 메뉴의 가시성을 토글하고 다른 메뉴는 숨김

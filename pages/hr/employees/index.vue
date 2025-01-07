@@ -157,6 +157,18 @@ import { ref,computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import Pagination from '~/components/common/Pagination.vue';
 
+// 페이지 메타데이터 설정
+const pageTitle = ref('사원 관리');
+// useHead를 사용하여 메타 태그 설정
+useHead({
+  title: pageTitle.value, // 페이지 제목 설정
+  
+});
+import { usePageStore } from '~/store/pageStore';
+const pageStore = usePageStore();
+pageStore.setTitle(pageTitle.value);
+// 페이지 메타데이터 설정
+
 const router = useRouter();
 
 // 상태 관리

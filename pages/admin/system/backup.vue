@@ -161,71 +161,20 @@ const fetchBackupList = async () => {
   };
   
   // 백업 파일 다운로드
-//   const downloadBackup = async (filename: string) => {
-//     try {
-//       const response = await fetch(`/api/admin/backup/${filename}`);
-//       if (!response.ok) throw new Error('다운로드 실패');
-      
-//       const blob = await response.blob();
-//       const url = window.URL.createObjectURL(blob);
-//       const a = document.createElement('a');
-//       a.href = url;
-//       a.download = filename;
-//       document.body.appendChild(a);
-//       a.click();
-//       window.URL.revokeObjectURL(url);
-//       document.body.removeChild(a);
-//     } catch (error) {
-//       console.error('백업 다운로드 실패:', error);
-//       alert('백업 파일 다운로드에 실패했습니다.');
-//     }
-//   };
-  
-// const downloadBackup = async (filename: string) => {
-//   try {
-//     const response = await fetch(`/api/admin/backup/${filename}`);
-//     if (!response.ok) {
-//       const errorData = await response.text();
-//       throw new Error(errorData || '다운로드 실패');
-//     }
-    
-//     const blob = await response.blob();
-//     const url = window.URL.createObjectURL(blob);
-//     const a = document.createElement('a');
-//     a.href = url;
-//     a.download = filename;
-//     document.body.appendChild(a);
-//     a.click();
-//     window.URL.revokeObjectURL(url);
-//     document.body.removeChild(a);
-//   } catch (error) {
-//     console.error('백업 다운로드 실패:', error);
-//     alert(error instanceof Error ? error.message : '백업 파일 다운로드에 실패했습니다.');
-//   }
-// };
-// 백업 파일 다운로드
-const downloadBackup = async (filename: string) => {
-  try {
-    const response = await fetch(`/api/admin/backup/${encodeURIComponent(filename)}`);
-    if (!response.ok) {
-      const errorData = await response.text();
-      throw new Error(errorData || '다운로드 실패');
+  const downloadBackup = async (filename: string) => {
+    try {
+      console.log('다운로드 요청 파일명:', filename);
+      // 전체 URL을 사용
+      const baseUrl = window.location.origin;
+      const downloadUrl = `${baseUrl}/api/admin/backup/file/${encodeURIComponent(filename)}`;
+      console.log('다운로드 URL:', downloadUrl);
+      window.open(downloadUrl, '_blank');
+    } catch (error) {
+      console.error('백업 다운로드 실패:', error);
+      alert('백업 파일 다운로드에 실패했습니다.');
     }
-    
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    window.URL.revokeObjectURL(url);
-    document.body.removeChild(a);
-  } catch (error) {
-    console.error('백업 다운로드 실패:', error);
-    alert(error instanceof Error ? error.message : '백업 파일 다운로드에 실패했습니다.');
-  }
-};
+  };
+  
   // 유틸리티 함수
   const formatFileSize = (bytes: number) => {
     if (bytes === 0) return '0 Bytes';

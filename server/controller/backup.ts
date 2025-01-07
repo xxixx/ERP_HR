@@ -4,17 +4,29 @@ import * as path from 'path';
 import { sql } from '~/server/db';
 
 const backupDir = path.join(process.cwd(), 'backups');
+console.log('백업 디렉토리 경로:', backupDir);
 
 // 백업 디렉토리가 없으면 생성
 if (!fs.existsSync(backupDir)) {
+  console.log('백업 디렉토리 생성');
   fs.mkdirSync(backupDir, { recursive: true });
 }
+console.log('백업 디렉토리 준비 완료');
 
 export const createBackup = async (event: H3Event) => {
   try {
     console.log('백업 생성 시작');
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+    const now = new Date();
+    const timestamp = now.toLocaleString('ko-KR', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    }).replace(/[/\s:\.]/g, '-').replace(/--/g, '-');
     const backupFileName = `backup-${timestamp}.sql`;
+    console.log('생성될 백업 파일명:', backupFileName);
     const backupPath = path.join(backupDir, backupFileName);
 
     // 테이블 목록 조회
@@ -129,53 +141,32 @@ export const getBackupList = async () => {
   }
 };
 
-// export const downloadBackup = async (event: H3Event) => {
-//   try {
-//     const filename = event.context.params.filename;
-//     const filePath = path.join(backupDir, filename);
-    
-//     if (!fs.existsSync(filePath)) {
-//       throw createError({
-//         statusCode: 404,
-//         statusMessage: '백업 파일을 찾을 수 없습니다.'
-//       });
-//     }
-
-//     return new Promise((resolve, reject) => {
-//       fs.readFile(filePath, (err, data) => {
-//         if (err) {
-//           reject(createError({
-//             statusCode: 500,
-//             statusMessage: '파일 읽기 실패'
-//           }));
-//         } else {
-//           resolve(data);
-//         }
-//       });
-//     });
-//   } catch (error) {
-//     console.error('백업 다운로드 실패:', error);
-//     throw createError({
-//       statusCode: 500,
-//       statusMessage: '백업 다운로드 중 오류가 발생했습니다.'
-//     });
-//   }
-// };
-
 export const downloadBackup = async (event: H3Event) => {
     try {
+      console.log('이벤트 컨텍스트:', event.context);
+      console.log('요청 URL:', event.node.req.url);
+      
       const filename = event.context.params.filename;
-      const filePath = path.join(backupDir, filename);
+      console.log('요청된 파일명:', filename);
+      
+      const backupPath = path.join(process.cwd(), 'backups');
+      console.log('백업 디렉토리:', backupPath);
+      
+      const filePath = path.join(backupPath, filename);
+      console.log('전체 파일 경로:', filePath);
+      console.log('파일 존재 여부:', fs.existsSync(filePath));
       
       if (!fs.existsSync(filePath)) {
+        console.error('파일을 찾을 수 없음:', filePath);
         throw createError({
           statusCode: 404,
-          statusMessage: '백업 파일을 찾을 수 없습니다.'
+          statusMessage: `백업 파일을 찾을 수 없습니다: ${filename}`
         });
       }
-  
+
       // 파일 읽기
       const fileContent = fs.readFileSync(filePath);
+      console.log('파일 크기:', fileContent.length);
       
       // 응답 헤더 설정
       event.node.res.setHeader('Content-Type', 'application/sql');
@@ -184,13 +175,11 @@ export const downloadBackup = async (event: H3Event) => {
       
       return fileContent;
     } catch (error) {
-      console.error('백업 다운로드 실패:', error);
-      throw createError({
-        statusCode: 500,
-        statusMessage: error instanceof Error ? error.message : '백업 다운로드 중 오류가 발생했습니다.'
-      });
+      console.error('다운로드 처리 중 에러:', error);
+      throw error;
     }
-  };
+};
+
 export const deleteBackup = async (event: H3Event) => {
   try {
     const filename = event.context.params.filename;

@@ -186,7 +186,18 @@
   
   <script setup>
   import { ref, computed, watch, onMounted } from 'vue';
+ 
+  // 페이지 메타데이터 설정
+const pageTitle = ref('년차 관리');
+// useHead를 사용하여 메타 태그 설정
+useHead({
+  title: pageTitle.value, // 페이지 제목 설정
   
+});
+import { usePageStore } from '~/store/pageStore';
+const pageStore = usePageStore();
+pageStore.setTitle(pageTitle.value);
+// 페이지 메타데이터 설정
   // 상태 관리
   const employees = ref([]);
   const totalItems = ref(0);

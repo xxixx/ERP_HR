@@ -75,6 +75,17 @@
   import { ref, onMounted } from 'vue';
   import { useRouter } from 'vue-router';
  
+   // 페이지 메타데이터 설정
+const pageTitle = ref('년차 관리');
+// useHead를 사용하여 메타 태그 설정
+useHead({
+  title: pageTitle.value, // 페이지 제목 설정
+  
+});
+import { usePageStore } from '~/store/pageStore';
+const pageStore = usePageStore();
+pageStore.setTitle(pageTitle.value);
+// 페이지 메타데이터 설정
 
   const router = useRouter();
   const leaveBalance = ref({});
