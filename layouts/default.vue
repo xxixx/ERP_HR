@@ -52,6 +52,7 @@
               <li><NuxtLink to="/production/barcodeRegister">바코드등록</NuxtLink></li>
               <li><NuxtLink to="/production/barcodeRegister">공정마감</NuxtLink></li>
               <li><NuxtLink to="/barcode/barcodeRegister">제품바코드출력</NuxtLink></li>
+              <li><NuxtLink to="/barcode/serch">바코드검색</NuxtLink></li>
             </ul>
           </li>
           <li class="borderbox">

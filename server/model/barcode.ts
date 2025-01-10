@@ -74,8 +74,8 @@ export const updateLastSerialNumber = async (PRODUCT_CODE: string, PROCESS_CODE:
   } else {
     // PRODUCT_CODE가 없으면 INSERT
     await sql({
-      query: `INSERT INTO BARCODE_COUNT (PRODUCT_CODE, PROCESS_CODE, LAST_SERIAL_NUMBER, BARCODE_COUNT) VALUES (?, ?, ?, ?)`,
-      values: [PRODUCT_CODE, PROCESS_CODE, lastSerialNumber, BARCODE_COUNT],  // 매개변수 순서 확인
+      query: `INSERT INTO BARCODE_COUNT ( PROCESS_CODE, LAST_SERIAL_NUMBER, BARCODE_COUNT) VALUES (?, ?, ?)`,
+      values: [ PROCESS_CODE, lastSerialNumber, BARCODE_COUNT],  // 매개변수 순서 확인
     });
     console.log('INSERT new PRODUCT_CODE',PRODUCT_CODE, lastSerialNumber, PROCESS_CODE, PRODUCT_CODE, BARCODE_COUNT);
   }
@@ -121,3 +121,76 @@ export const getScannedBarcodecount = async (PROCESSCODE: string) => {
 
   return result;
 };
+//바코드 검색
+export const searchBarcodes = async ({
+  searchQuery,
+  searchType,
+  dateStart,
+  dateEnd,
+  page,
+  limit
+}) => {
+  const offset = (page - 1) * limit
+  
+  let whereClause = '1=1'
+  const queryParams = []
+  
+  if (searchQuery) {
+    if (searchType === 'exact') {
+      whereClause += ' AND BARCODE = ?'
+      queryParams.push(searchQuery)
+    } else {
+      whereClause += ' AND BARCODE LIKE ?'
+      queryParams.push(`%${searchQuery}%`)
+    }
+  }
+  
+  if (dateStart) {
+    whereClause += ' AND CREATE_DATE >= ?'
+    queryParams.push(dateStart)
+  }
+  
+  if (dateEnd) {
+    whereClause += ' AND CREATE_DATE <= ?'
+    queryParams.push(dateEnd)
+  }
+
+  console.log('검색 조건:', whereClause);
+  console.log('파라미터:', queryParams);
+
+  try {
+    // 전체 건수 조회
+    const countResult = await sql({
+      query: `
+        SELECT COUNT(*) as total 
+        FROM SCANNED_BARCODE 
+        WHERE ${whereClause}
+      `,
+      values: queryParams
+    });
+    
+    // 데이터 조회
+    const data = await sql({
+      query: `
+        SELECT NO, BARCODE, CREATE_DATE, BOX_NO, LOT
+        FROM SCANNED_BARCODE
+        WHERE ${whereClause}
+        ORDER BY CREATE_DATE DESC
+        LIMIT ${limit} OFFSET ${offset}
+      `,
+      values: queryParams
+    });
+
+    console.log('검색 결과:', { total: countResult[0].total, count: data.length });
+
+    return {
+      data,
+      total: countResult[0].total,
+      page,
+      limit
+    }
+  } catch (error) {
+    console.error('SQL 실행 중 오류:', error);
+    throw error;
+  }
+}

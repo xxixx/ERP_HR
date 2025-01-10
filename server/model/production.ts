@@ -265,22 +265,37 @@ export const getByProcessCode = async (PROCESSCODE) => {
 //생산 입고 데이터 조회
 export const getProcessStateRecord = async () => {
   const result = await sql({
-    query: `SELECT
-    jr.*,
-    ACCOUNT.NAME as REG_ACCOUNT_NAME,
-       wpp.PRODUCT_FULLNAME,
-       wpp.ProductCode ,
-       wpp.PRODUCT_BARCODE,
-       wpp.PRODUCT_CODE
-  FROM
-    JAEDAN jr
-  JOIN
-    WORKING_ORDER wo ON jr.WORK_ORDER_NO = wo.NO
-  JOIN
-    WORKING_PART wp ON wo.WORKING_PART = wp.NO
-  JOIN WorkingPartProductsWondanViewTable wpp ON wp.NO = wpp.WorkingPartNo
-   JOIN ACCOUNT ON wo.REG_ACCOUNT = ACCOUNT.NO
-    where jr.PROCESS_STATE = 1 or jr.PROCESS_STATE = 2`
+    query: `
+      SELECT
+        jr.*,
+        ACCOUNT.NAME as REG_ACCOUNT_NAME,
+        wpp.PRODUCT_FULLNAME,
+        wpp.ProductCode,
+        wpp.PRODUCT_BARCODE,
+        wpp.PRODUCT_CODE,
+        COUNT(DISTINCT sb.NO) as SCANNED_COUNT,
+        COALESCE(bc.BARCODE_COUNT, 0) as PRINT_BARCODE_COUNT
+      FROM
+        JAEDAN jr
+      JOIN
+        WORKING_ORDER wo ON jr.WORK_ORDER_NO = wo.NO
+      JOIN
+        WORKING_PART wp ON wo.WORKING_PART = wp.NO
+      JOIN 
+        WorkingPartProductsWondanViewTable wpp ON wp.NO = wpp.WorkingPartNo
+      JOIN 
+        ACCOUNT ON wo.REG_ACCOUNT = ACCOUNT.NO
+      LEFT JOIN
+        SCANNED_BARCODE sb ON jr.PROCESSCODE = sb.PROCESS_CODE
+      LEFT JOIN
+        BARCODE_COUNT bc ON jr.PROCESSCODE = bc.PROCESS_CODE
+      WHERE 
+        jr.PROCESS_STATE = 1 OR jr.PROCESS_STATE = 2
+      GROUP BY
+        jr.NO, jr.PROCESSCODE, ACCOUNT.NAME, wpp.PRODUCT_FULLNAME, 
+        wpp.ProductCode, wpp.PRODUCT_BARCODE, wpp.PRODUCT_CODE,
+        bc.BARCODE_COUNT
+    `
   });
 
   return result as ProductionModel[];
@@ -791,4 +806,3 @@ export const dayProductionremove = async (NO: string) => {
 // export function updateState(arg0: { WORK_ORDER_NO: any; WONDAN_STORE: any; WONDAN_MANAGER_NO: any; LOT: any; Y_COUNT: any; MARKS: any; COUNT: any; DEFECTIVE: any; CREATE_DATE: any; WORK_DATE: any; REG_ACCOUNT: any; }) {
 //   throw new Error('Function not implemented.');
 // }
-

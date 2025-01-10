@@ -52,8 +52,8 @@
               <th>품명</th>
               <th>공정진행표</th>
               <th>COUNT</th>
-              <th class="d-none d-md-table-cell">작업일</th>
-              <th class="d-none d-md-table-cell">STATE</th>
+              <th class="d-none d-md-table-cell">NO</th>
+              <th class="d-none d-md-table-cell">진척도</th>
               <th>
                 <div
                   class="btn btn-sm btn-success sm-btn"
@@ -86,16 +86,27 @@
               </td>
               <td>{{ item.COUNT }}</td>
               <td class="d-none d-md-table-cell">
-                {{ formatDateToMonthDay(item.WORK_DATE) }}
+                {{item.NO }}
               </td>
-              <td class="d-none d-md-table-cell">{{ item.STATE }}</td>
+              <td class="d-none d-md-table-cell">
+                <div class="progress" role="progressbar" 
+                     :aria-label="'진행률: ' + Math.round((item.SCANNED_COUNT / item.COUNT) * 100) + '%'" 
+                     :aria-valuenow="Math.round((item.SCANNED_COUNT / item.COUNT) * 100)" 
+                     aria-valuemin="0" 
+                     aria-valuemax="100">
+                  <div class="progress-bar progress-bar-striped bg-warning" 
+                       :style="{ width: Math.round((item.SCANNED_COUNT / item.COUNT) * 100) + '%' }">
+                    {{ Math.round((item.SCANNED_COUNT / item.COUNT) * 100) }}%
+                  </div>
+                </div>
+              </td>
               <td>
-                <div
+                <!-- <div
                   v-if="item.STATE === 2 && item.PROCESS_STATE ===2"
                   class="btn btn-sm btn-warning sm-btn disabled text-white me-1"
                 >
                   공정진행중
-                </div>
+                </div> -->
                 <!-- <div v-if="item.STATE === 3" class="btn btn-sm btn-secondary sm-btn text-white" @click="onPrint(item.NO)">공정진행표출력</div> -->
                 <div
                   v-if="item.STATE === 2 && item.PROCESS_STATE ===2"
@@ -113,20 +124,18 @@
             </tr>
             <tr class="tr-border">
               <td></td>
-              <td></td>
+              <td> <strong>[계획수량 <span  class="text-danger ms-2">{{ item.COUNT }}</span>]</strong></td>
               <td class="">
                 <strong
-                  >바코드 출력수<span class="text-danger ms-3">{{
-                    item.LAST_SERIAL_NUMBER
-                  }}</span></strong
+                  >바코드 출력수<span class="text-danger ms-3">[{{
+                    item.PRINT_BARCODE_COUNT
+                  }}]</span></strong
                 >
               </td>
               <td class="d-none d-md-table-cell"></td>
               <td>
                 <strong
-                  >바코드 등록수<span class="text-danger ms-3">{{
-                    item.BARCODE_COUNT
-                  }}</span></strong
+                  >바코드 등록수<span class="text-danger ms-3">[{{ item.SCANNED_COUNT }}]</span></strong
                 >
               </td>
               <td class="d-none d-md-table-cell"></td>
@@ -226,7 +235,7 @@ import type { ProductionModel } from "~~/server/model/production";
 import type { ProductModel } from "~~/server/model/product";
 import { formatDateToMonthDay } from "~~/utils/formatDatetoMonth";
 import { useRoute } from "vue-router";
-
+import * as XLSX from "xlsx";
 import { useAuthStore } from '~/store/auth';
 const authStore = useAuthStore();
 import { useAccountStore } from "~/store/account";
@@ -355,35 +364,40 @@ const onProcessChangeState = (item) => {
       console.error("요청 중 에러 발생:", error);
     });
 };
-const onProcessFinish = (item) => {
+const onProcessFinish = async (item) => {
   console.log("item", item);
   const JaedanNo = item.NO;
 
   console.log("JaedanNo", JaedanNo);
 
-  const response = $fetch(`/api/production/processFinish/${JaedanNo}`, {
-    method: "POST",
-    body: {
-      NO: JaedanNo,
-      PROCESS_STATE: 3,
-      PROCESS_STATE_UP_ACCOUNT: productionAccount.value,
-      PROCESS_END_DATE: new Date().toISOString().split('T')[0], // YYYY-MM-DD 형식으로 변환
-    },
-  })
-    .then(() => {
-      // 요청이 성공적으로 완료되면 이 부분이 실행됩니다.
-      if (response) {
-        alert("업데이트 성공");
-        console.log("업데이트 성공");
-      } else {
-        console.log("업데이트 실패");
-      }
-      fetchData();
-    })
-    .catch((error) => {
-      // 에러가 발생하면 이 부분이 실행됩니다.
-      console.error("요청 중 에러 발생:", error);
+  // 확인 창 표시
+  if (!confirm("공정을 완료 하시겠습니까?")) {
+    return; // 취소를 누르면 함수 종료
+  }
+
+  try {
+    const response = await $fetch(`/api/production/processFinish/${JaedanNo}`, {
+      method: "POST",
+      body: {
+        NO: JaedanNo,
+        PROCESS_STATE: 3,
+        PROCESS_STATE_UP_ACCOUNT: productionAccount.value,
+        PROCESS_END_DATE: new Date().toISOString().split('T')[0], // YYYY-MM-DD 형식으로 변환
+      },
     });
+
+    if (response) {
+      alert("업데이트 성공");
+      console.log("업데이트 성공");
+      await fetchData(); // 성공 후 데이터 새로고침
+    } else {
+      console.log("업데이트 실패");
+      alert("업데이트 실패");
+    }
+  } catch (error) {
+    console.error("요청 중 에러 발생:", error);
+    alert("업데이트 실패");
+  }
 };
 
 const onPrint = async (NO: number) => {

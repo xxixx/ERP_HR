@@ -117,11 +117,14 @@
             class="mb-3 d-flex align-items-center flex-fill me-3"
             style="text-align: left"
           >
-            <input
+          <input
               class="form-control"
               v-model="scannedBarcode"
-              placeholder="Scan barcode"
-              @input="handleBarcodeInputArray"
+              placeholder="바코드를 스캔하거나 입력하세요"
+              @keyup.enter="handleBarcodeInputArray"
+              @paste="handlePaste"
+              ref="barcodeInput"
+              :disabled="!isScanning"
             />
           </div>
         </div>
@@ -164,9 +167,20 @@
                              </div>
                             <hr>
                      </div> -->
-        <!--  -->
-        <div class="table-responsive text-center d-flex justify-content-center">
-          <div class="table table-striped table-bordered text-center">
+                     
+                     
+                     <div class="table-responsive text-center d-flex justify-content-center">
+                       <div class="table table-striped table-bordered text-center">
+                         <!-- 스캔 수 표시 -->
+                         <div class="mb-2 border py-2 bg-secondary text-white">
+                           <span>스캔된 바코드 수: </span> 
+                           <span style="font-size: 1.5em;">{{ scannedBarcodes.length }} </span> 
+                           <span style="font-size: 1.5em;"> /{{ quantity }}</span>
+                         
+                        </div>
+                         <!--  -->
+
+
             <!-- <div class="table-responsive text-start"  > -->
             <table class="table table-sm text-center">
               <thead>
@@ -177,11 +191,17 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="(barcode, index) in scannedBarcodes" :key="index">
+                <!-- <tr v-for="(barcode, index) in scannedBarcodes" :key="index">
                   <td>{{ index + 1 }}</td>
                   <td>{{ barcode }}</td>
                   <td>{{ currentDate }}</td>
+                </tr> -->
+                <tr v-for="(barcode, index) in reversedBarcodes" :key="index">
+                  <td>{{ scannedBarcodes.length - index }}</td>
+                  <td>{{ barcode }}</td>
+                  <td>{{ currentDate }}</td>
                 </tr>
+
               </tbody>
             </table>
           </div>
@@ -333,22 +353,53 @@ const ScannedBarcodecount = ref('');
 const isScanning = ref(false);
 const currentDate = computed(() => new Date().toISOString().split("T")[0]);
 const boxView = ref(false);
+// 바코드 목록을 역순으로 표시하기 위한 computed 속성
+const reversedBarcodes = computed(() => {
+  return [...scannedBarcodes.value].reverse();
+});
 
+
+// 바코드 입력 필드에 포커스
+const barcodeInput = ref(null);
+
+const focusInput = () => {
+  if (barcodeInput.value) {
+    barcodeInput.value.focus();
+  }
+};
 
 const getLotNumber = () => {
   const today = new Date()
   return `${today.getFullYear()}${(today.getMonth() + 1).toString().padStart(2, '0')}${today.getDate().toString().padStart(2, '0')}`
 }
 const LOTNUMBER = ref(getLotNumber()); // getLotNumber 함수를 호출하여 LOTNUMBER에 할당
-const startScanning = () => {
-  if (quantity.value <= 0) {
-    alert("Please enter a valid quantity");
-    return;
-  }
-  boxView.value = false;
+// const startScanning = () => {
+//   if (quantity.value <= 0) {
+//     alert("Please enter a valid quantity");
+//     return;
+//   }
+//   boxView.value = false;
+//   isScanning.value = true;
+//   scannedBarcodes.value = [];
+// };
+// 스캔 시작
+const startScanning = async () => {
   isScanning.value = true;
-  scannedBarcodes.value = [];
+  await getLotNumber();
+  await nextTick(() => {
+    focusInput();
+  });
 };
+// 붙여넣기 처리
+const handlePaste = (event) => {
+  event.preventDefault();
+  const pastedText = event.clipboardData.getData('text');
+  if (pastedText) {
+    scannedBarcode.value = pastedText.trim();
+    handleBarcodeInputArray();
+  }
+};
+
 let currentBoxNumber = 1; // 기본값은 1
 
 const getBoxNumber = async () => {
@@ -430,33 +481,68 @@ const handleBarcodeInput = () => {
   }
 };
 //배열로 버장하는 것
+// const handleBarcodeInputArray = async () => {
+//   const barcode = scannedBarcode.value.trim(); // 입력된 바코드
+
+//   if (barcode) {
+//     // 클라이언트 측 중복 체크
+//     if (scannedBarcodes.value.includes(barcode)) {
+//       alert("이미 스캔한 바코드입니다.");
+//       scannedBarcode.value = ""; // 중복일 경우 입력 필드 초기화
+//       return; // 중복일 경우 함수 종료
+//     }
+
+//     // 서버로 중복 체크 요청
+//     const isDuplicate = await checkBarcodeDuplicate(barcode);
+//     if (isDuplicate) {
+//       alert("중복된 바코드입니다.");
+//       scannedBarcode.value = ""; // 중복일 경우 입력 필드 초기화
+//       return; // 중복일 경우 함수 종료
+//     }
+
+//     // 바코드를 배열에 추가
+//     scannedBarcodes.value.push(barcode);
+//     scannedBarcode.value = ""; // 입력 필드를 초기화
+
+//     // 설정된 개수만큼 바코드가 스캔되면 한 번에 전송
+//     if (scannedBarcodes.value.length >= quantity.value) {
+//       boxView.value = true;
+//       saveScannedBarcodesArray(); // 배열을 서버로 전송
+//     }
+//   }
+// };
+
+// 바코드 입력 처리
 const handleBarcodeInputArray = async () => {
-  const barcode = scannedBarcode.value.trim(); // 입력된 바코드
+  const barcode = scannedBarcode.value.trim();
 
   if (barcode) {
     // 클라이언트 측 중복 체크
     if (scannedBarcodes.value.includes(barcode)) {
       alert("이미 스캔한 바코드입니다.");
-      scannedBarcode.value = ""; // 중복일 경우 입력 필드 초기화
-      return; // 중복일 경우 함수 종료
+      scannedBarcode.value = "";
+      focusInput();
+      return;
     }
 
     // 서버로 중복 체크 요청
     const isDuplicate = await checkBarcodeDuplicate(barcode);
     if (isDuplicate) {
       alert("중복된 바코드입니다.");
-      scannedBarcode.value = ""; // 중복일 경우 입력 필드 초기화
-      return; // 중복일 경우 함수 종료
+      scannedBarcode.value = "";
+      focusInput();
+      return;
     }
 
     // 바코드를 배열에 추가
     scannedBarcodes.value.push(barcode);
-    scannedBarcode.value = ""; // 입력 필드를 초기화
+    scannedBarcode.value = "";
+    focusInput();
 
     // 설정된 개수만큼 바코드가 스캔되면 한 번에 전송
     if (scannedBarcodes.value.length >= quantity.value) {
       boxView.value = true;
-      saveScannedBarcodesArray(); // 배열을 서버로 전송
+      await saveScannedBarcodesArray();
     }
   }
 };

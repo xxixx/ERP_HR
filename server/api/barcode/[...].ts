@@ -1,6 +1,6 @@
 import { useBase, createRouter, defineEventHandler } from 'h3';
 import * as barcodeCtrl from '~/server/controller/barcode';
-import * as scannedBarcodesCtl from '~~/server/controller/scannedBarcodes';
+import * as scannedBarcodesCtl from '~/server/controller/scannedBarcodes';
 
 const router = createRouter();
 
@@ -16,4 +16,6 @@ router.get('/barcode/checkDuplicate/:barcode', defineEventHandler(scannedBarcode
 router.post('/barcode/scannedBarcode', defineEventHandler(scannedBarcodesCtl.saveScannedBarcode));
 // 여러 바코드 저장 API
 router.post('/barcode/scannedBarcodes', defineEventHandler(scannedBarcodesCtl.saveScannedBarcodes));
+router.get('/barcode/search', defineEventHandler(barcodeCtrl.searchBarcodes))
+
 export default useBase('/api', router.handler);

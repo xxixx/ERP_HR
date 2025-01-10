@@ -8,9 +8,9 @@
     <div class="album py-5 bg-body-tertiary"></div>
     <div class="d-flex flex-wrap flex-column">
       <div>
-        <!-- <p>Process Code: {{ route.query.processCode  }}</p> -->
-        <!-- <p>PRODUCT_CODE: {{ route.query.productCode  }}</p> -->
-        <!-- <p>PRODUCT_BARCODE: {{ route.query.productBarCode }}</p> -->
+        <p>Process Code: {{ route.query.processCode  }}</p>
+        <p>PRODUCT_CODE: {{ route.query.productCode  }}</p>
+        <p>PRODUCT_BARCODE: {{ route.query.productBarCode }}</p>
         <p>공정번호 {{ processCode }}</p>
         <!-- <p>barcodeData {{ barcodeData }}</p> -->
         <!-- <p>PRODUCT_CODE {{ PRODUCT_CODE }}</p> -->

@@ -23,11 +23,11 @@
               <div class="middle-div"></div>
               <div>PA6.6/Si</div>
             </div> -->
-            <div class="d-flex justify-content-center center-div">
-              <div class="d-flex flex-column">
+            <div class="d-flex justify-content-center center-div mx-3 border-top">
+              <div class="d-flex flex-column left-column">
                 <!-- <span class="top-gap"></span> -->
                 <span class="middle-font">ALKOSC</span>
-                <span class="middle-font">VINFAST</span>
+                <span class="middle-font my-1">VINFAST</span>
                 <span class="middle-font">{{ carName }}</span>
               </div>
               <div class="qr-code">
@@ -36,7 +36,7 @@
               <div class="d-flex flex-column">
                 <!-- <span class="top-gap"></span> -->
                 <span class="middle-font">PA6.6/Si</span>
-                <span class="middle-font">&nbsp;PAB</span>
+                <span class="middle-font my-1">&nbsp;PAB</span>
                 <span class="middle-font">US</span>
               </div>
             </div>
@@ -104,7 +104,12 @@ onMounted(async () => {
 <style>
 @page { size : 40mm 20mm; margin: 0; }
 @media print {
-  html, body { width:40mm; height: 20mm; }
+  html, body { 
+    width: 40mm; 
+    height: 20mm; 
+    margin: 0;
+    padding: 0;
+  }
   body * {
     visibility: hidden;
   }
@@ -112,96 +117,67 @@ onMounted(async () => {
   .barcode-container,
   .barcode-container * {
     visibility: visible;
+    transform-origin: top left;
+    transform: scale(1);
    
   }
 
   .barcode-item {
-    margin-bottom: 0;
+    margin: 0;
+    padding: 0;
     border: none;
+    width: 40mm;
+    height: 20mm;
   }
   .barcode-position {
-    position: relative;
-    right:  40px;
-    top: 8px;
-    font-style: bold;
-    margin-top: 0px;
-    font-size: 5px;
-    max-width: 170px;
+    position: absolute;
+    left: -10px;
+    top: 0;
+    margin: 0;
+    padding: 0;
+    width: 40mm;
+    height: 20mm;
+    font-size: 6px;
     font-weight: 600;
-    text-align: center;
-    border-top: 1px solid black;
     /* margin-bottom: 80px; */
     /* margin-bottom: 58.5px; */
   }
-  .barcode-name {
-    text-align: center;
-    margin-right: 3px;
-    /* font-size: 5px; */
-    font-style: bold;
-    font-weight: 700  ;
-    /* margin-left: 10px; */
-    /* margin-right: 10px; */
-      /* position: relative;
-      top: -10px;
-      left: 8px; */  
-   }
-   .barcode-headname {
-    font-size: 6px;
-    font-weight: bold;
-    display: flex;
-    justify-content: space-between;
-    text-align: center;
-    margin: auto;
-    margin-top: -10px;
-    position: relative;
-    top: 10px;
-    left: 10px;
-  } 
-  .middle-div {
-    width: 34px;
+  .qr-code img {
+    height: 10mm !important;
+    width: auto;
   }
-  /* .center-div {
-    margin-top: 4px;
-    margin-bottom:-10;
-    padding: 0;
-    width: 170px;
-  } */
-  .top-gap {
-    margin-top: 12px;
-  }
-  /* .center-div {
-    margin-top: -5px;
-    margin-bottom: 0;
-    padding: 0;
-  } */
-  /*   */
-  /* .middle-div {
-    width: 45px;
-  } */
-  /* .barcode-headname {
-    display: flex;
-    justify-content: space-between;
-    text-align: center;
-    margin: auto;
-    margin-top: -2px;
-  } */
-  /* .top-gap {
-    margin-top: 6px;
-  } */
-  /* .qr-code {
-    margin-top: -2px;
-  } */
   .middle-font {
     font-size: 5px;
-    font-weight: 800;
+    line-height: 1.2;
+    margin: 0;
+    padding: 0;
   }
-  /* .small-font {
-    font-size: 4px;
-    font-weight: 600;
-  } */
-  /* img{
-      margin: 0;
-      padding: 0;
-  } */
+  .left-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    padding: 1mm 0;
+  }
+  
+  .alkosc-text {
+    margin-top: -2mm;
+    font-weight: 400;
+  }
+  .barcode-name {
+    font-size: 6px;
+   
+    margin: 0;
+    padding: 0;
+    line-height: 1;
+    font-style: bold;
+   }
+   .center-div {
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2mm;
+  }
+
+   
 }
 </style>

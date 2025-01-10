@@ -13,7 +13,7 @@
           Prev</a
         >
       </li>
-      <li
+      <li 
         class="page-item d-inline"
         v-for="page in displayedPages"
         :key="page"
@@ -120,8 +120,8 @@ a {
   .pages {
     text-align: center;
     margin-top: 10px;
-  }
-  
+}
+
   .pages a {
     display: inline-block;
   }
@@ -154,8 +154,8 @@ a {
   .pages .back:not(.disabled):hover,
   .pages .next:not(.disabled):hover {
     color: #cc1b6f;
-  }
-  
+}
+
   .pages .back.disabled,
   .pages .next.disabled {
     color: #bdb9bf;
@@ -198,11 +198,11 @@ a {
     cursor: default;
   }
   .ellipsis {
-    color: #6c757d;
+  color: #6c757d;
     cursor: default;
     padding: 0.5rem 0.75rem;
     text-decoration: none;
     border: none;
     background: transparent;
-  }
+}
 </style>
