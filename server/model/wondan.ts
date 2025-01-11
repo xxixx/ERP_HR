@@ -27,6 +27,7 @@ export const getWondanCode = async () => {
   
     return result as WondanModel[];
   };
+
   export const getUseable = async () => {
     const result = await sql({
       // query: 'SELECT no, DATE, PART,CATEGORY, SUB_CATEGORY,COUNT FROM DEFECTIVE_DATA'
@@ -401,4 +402,191 @@ export const searchRecords2 = async (searchQuery: string) => {
   
     return result.length === 1 ? (result[0] as WondanModel) : null;
   };
+
+  export const searchMasterWondanByTerm = async (searchTerm: string) => {
+    console.log('[Model] searchMasterWondanByTerm - 검색 시작, 검색어:', searchTerm);
+
+    try {
+      const query = `
+        SELECT * FROM WONDAN 
+        WHERE WONDAN_NAME LIKE ? OR NAME LIKE ? OR BUPUM_NO LIKE ? OR SUPPLAY LIKE ?
+      `;
+      const searchPattern = `%${searchTerm}%`;
+      const values = [searchPattern, searchPattern, searchPattern, searchPattern];
+
+      const result = await sql({ query, values });
+      console.log('[Model] searchMasterWondanByTerm - 검색 완료, 결과:', result);
+
+      return result;
+    } catch (error) {
+      console.error('[Model] searchMasterWondanByTerm - 에러 발생:', error);
+      throw error;
+    }
+  };
+
+  export const getMasterWondanCode = async () => {
+    const result = await sql({
+      query: `SELECT * FROM  WONDAN`,
+      values: [] // or values: null, depending on the sql function's requirements
+    });
   
+    return result as WondanModel[];
+  };
+  // 원단 마스터 코드 수정
+export const updateMasterWondan = async (id: number, data: WondanModel) => {
+  console.log('[Model] updateMasterWondan - 수정 시작, ID:', id, '데이터:', data);
+
+  try {
+    // 중복 체크 (자신의 ID는 제외)
+    const duplicateCheck = await sql({
+      query: 'SELECT NO FROM WONDAN WHERE WONDAN_NAME = ? AND NO != ?',
+      values: [data.WONDAN_NAME, id],
+    });
+
+    if (duplicateCheck.length > 0) {
+      throw new Error('이미 존재하는 원단 코드입니다.');
+    }
+
+    // 수정
+    const query = `
+      UPDATE WONDAN
+      SET 
+        WONDAN_NAME = ?,
+        NAME = ?,
+        BUPUM_NO = ?,
+        SUPPLAY = ?,
+        WONDAN_BARCODE = ?,    
+        DESCRIPTION = ?,    
+        STATE = ?    
+      WHERE NO = ?
+    `;
+
+    const result = await sql({
+      query,
+      values: [
+        data.WONDAN_NAME,
+        data.NAME,
+        data.BUPUM_NO || '',
+        data.SUPPLAY,
+        data.WONDAN_BARCODE,
+        data.DESCRIPTION,
+        data.STATE,
+        id
+      ],
+    });
+
+    console.log('[Model] updateMasterWondan - 수정 완료, 결과:', result);
+
+    if (result.affectedRows === 0) {
+      throw new Error('수정할 원단 코드를 찾을 수 없습니다.');
+    }
+
+    return result;
+  } catch (error) {
+    console.error('[Model] updateMasterWondan - 에러 발생:', error);
+    throw error;
+  }
+};
+
+// 원단 마스터 코드 등록
+export const registerMasterWondan = async (data: WondanModel) => {
+  console.log('[Model] registerMasterWondan - 등록 시작, 데이터:', data);
+
+  try {
+    // 중복 체크
+    const duplicateCheck = await sql({
+      query: 'SELECT NO FROM WONDAN WHERE WONDAN_NAME = ?',
+      values: [data.WONDAN_NAME],
+    });
+
+    if (duplicateCheck.length > 0) {
+      throw new Error('이미 존재하는 원단 코드입니다.');
+    }
+
+    // 등록
+    const query = `
+      INSERT INTO WONDAN (
+        WONDAN_NAME,
+        NAME,
+        BUPUM_NO,
+        SUPPLAY,
+        WONDAN_BARCODE,
+        DESCRIPTION,
+        STATE
+      ) VALUES (?, ?, ?, ?, ?, ?, ?)
+    `;
+
+    const result = await sql({
+      query,
+      values: [
+        data.WONDAN_NAME,
+        data.NAME,
+        data.BUPUM_NO || '',
+        data.SUPPLAY,
+        data.WONDAN_BARCODE || null,
+        data.DESCRIPTION || '',
+        data.STATE || '1'
+      ],
+    });
+
+    console.log('[Model] registerMasterWondan - 등록 완료, 결과:', result);
+
+    if (!result.insertId) {
+      throw new Error('원단 코드 등록에 실패했습니다.');
+    }
+
+    return {
+      success: true,
+      id: result.insertId
+    };
+  } catch (error) {
+    console.error('[Model] registerMasterWondan - 에러 발생:', error);
+    throw error;
+  }
+};
+
+// 원단 마스터 코드 삭제 (state 업데이트)
+export const removeMasterWondan = async (id: number) => {
+  console.log('[Model] removeMasterWondan - 삭제 시작, ID:', id);
+
+  try {
+    // 존재 여부 확인
+    const checkQuery = 'SELECT NO FROM WONDAN WHERE NO = ?';
+    const checkResult = await sql({
+      query: checkQuery,
+      values: [id]
+    });
+
+    if (checkResult.length === 0) {
+      throw new Error('삭제할 원단 코드를 찾을 수 없습니다.');
+    }
+
+    // state 업데이트
+    const query = `
+      UPDATE WONDAN 
+      SET 
+        STATE = 0,
+     
+      WHERE NO = ?
+    `;
+
+    const result = await sql({
+      query,
+      values: [id]
+    });
+
+    console.log('[Model] removeMasterWondan - 삭제 완료, 결과:', result);
+
+    if (result.affectedRows === 0) {
+      throw new Error('원단 코드 삭제에 실패했습니다.');
+    }
+
+    return {
+      success: true,
+      id: id
+    };
+  } catch (error) {
+    console.error('[Model] removeMasterWondan - 에러 발생:', error);
+    throw error;
+  }
+};

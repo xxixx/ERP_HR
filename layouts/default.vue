@@ -101,6 +101,14 @@
               
             </ul>
           </li>
+          <li class="borderbox">
+            <a class="nav-link text-white" @click="toggleMenu('menu12')" href="#">기초정보</a>
+            <ul class="menu" v-show="isMenuVisible('menu12')"> <!-- 대메뉴2 하위 메뉴 보이기 -->
+              <li><NuxtLink to="/master/wondan">원단관리</NuxtLink></li>
+            
+              
+            </ul>
+          </li>
           <li v-if="isAdmin" class="borderbox">
             <a class="nav-link text-white" @click="toggleMenu('menu10')" href="#">ADMIN</a>
             <ul class="menu" v-show="isMenuVisible('menu10')"> <!-- 대메뉴2 하위 메뉴 보이기 -->
@@ -158,7 +166,7 @@ import { usePageStore } from '~/store/pageStore';
 const pageStore = usePageStore();
 
 //메뉴 컨트롤
-const menuVisibility = ref({ menu1: false, menu2: false,menu3: false,menu4: false,menu5: false,menu6: false,menu7: false,menu8: false,menu9: false , menu10: false}); // 각 메뉴의 가시성 상태 저장
+const menuVisibility = ref({ menu1: false, menu2: false,menu3: false,menu4: false,menu5: false,menu6: false,menu7: false,menu8: false,menu9: false , menu10: false,menu11: false,menu12: false}); // 각 메뉴의 가시성 상태 저장
 
 const toggleMenu = (menu) => {
   // 클릭한 메뉴의 가시성을 토글하고 다른 메뉴는 숨김
