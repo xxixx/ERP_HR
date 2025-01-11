@@ -56,19 +56,18 @@ export const updateState = async (evt: H3Event) => {
     const body = await readBody(evt);
     const NO = body.NO as string;
 
-    // const STATE = body.STATE as number;
-
-    // const data = { STATE };
-    const result = await JaedanModel.updateState(NO, body.STATE,body.UPDATE_ACCOUNT,body.PROCESSCODE);
+    const result = await JaedanModel.updateState(NO, body.STATE, body.UPDATE_ACCOUNT, body.PROCESSCODE);
 
     return {
+      success: true,
       data: result
     };
   } catch (err) {
-    throw createError({
-      statusCode: 500,
-      statusMessage: 'Something went wrong'
-    });
+    console.error('상태 업데이트 실패:', err);
+    return {
+      success: false,
+      error: err.message || 'Something went wrong'
+    };
   }
 };
 export const updateStateProcess = async (evt: H3Event) => {
@@ -76,10 +75,7 @@ export const updateStateProcess = async (evt: H3Event) => {
     const body = await readBody(evt);
     const NO = body.NO as string;
 
-    // const STATE = body.STATE as number;
-
-    // const data = { STATE };
-    const result = await JaedanModel.updateStateProcess(NO, body.PROCESS_STATE,body.PROCESS_STATE_UP_ACCOUNT,body.PROCESSCODE);
+    const result = await JaedanModel.updateStateProcess(NO, body.PROCESS_STATE, body.PROCESS_STATE_UP_ACCOUNT, body.PROCESSCODE);
 
     return {
       data: result
@@ -108,13 +104,10 @@ export const getRecord = async () => {
 export const remove = async (evt: H3Event) => {
   try {
     console.log("evt",evt)
-    // const params = evt.context.params.no
     const result = await JaedanModel.remove(evt.context.params?.NO as string);
     console.log(result)
     return {
       data: result
-      
-    
     };
   } catch {
     throw createError({
@@ -209,7 +202,6 @@ export const getRecordsByDate = async (event: H3Event) => {
   console.log("startDate, endDate, page, limit:", startDate, endDate, page, limit);
   
   try {
-    // getRecordsByDate 함수 호출
     const { records, totalPages } = await JaedanModel.getRecordsByDate(startDate, endDate, parseInt(page), parseInt(limit));
     
     return {
@@ -299,10 +291,7 @@ export const partJaedaupdateState = async (evt: H3Event) => {
     const body = await readBody(evt);
     const NO = body.NO as string;
 
-    // const STATE = body.STATE as number;
-
-    // const data = { STATE };
-    const result = await JaedanModel.partJaedaupdateState(NO, body.JR_STATE,body.PROCESS_STATE,body.UPDATE_ACCOUNT,body.PROCESSCODE);
+    const result = await JaedanModel.partJaedaupdateState(NO, body.JR_STATE, body.PROCESS_STATE, body.UPDATE_ACCOUNT, body.PROCESSCODE);
 
     return {
       data: result

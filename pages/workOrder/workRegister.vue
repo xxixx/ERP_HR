@@ -143,6 +143,7 @@
               <th>원단명</th>
 
               <th class="">COUNT</th>
+              <th class="d-none d-md-table-cell"></th>
               <th class="">공정상태</th>
               <th class="d-none d-md-table-cell">등록자</th>
 

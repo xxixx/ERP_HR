@@ -53,7 +53,6 @@
               </div>
             </th>
           </tr>
-         
         </thead>
         <tbody>
           <tr v-for="(item, index) in getworkOrder" :key="index">
@@ -72,7 +71,7 @@
             <td class="d-none d-md-table-cell">{{ item.ACCOUNT_NAME }}</td>
 
             <td>
-              <div v-if="item.JAEDAN_STATE === 0">
+              <div v-if="item.STATE === 0">
                 <div
                   class="btn btn-sm btn-danger me-1"
                   @click="onDelete(item.NO)"
@@ -801,7 +800,7 @@ const insertData = async () => {
     
  
     upJadanStateFinish();
-   
+    alert("원단 상태변경");
     
 
     // onRegister();
@@ -876,14 +875,6 @@ const upJadanStateFinish = async () => {
         JAEDAN_STATE: 2,
         UPDATE_ACCOUNT: regUserNO.value,
       },
-    });
-
-    const { showSuccess, showError } = useToast();
-    showSuccess('원단을 사용 소진 하였습니다.', {
-      timeout: 3000,
-      position: "top-center",
-      icon: true,
-      closeButton: false
     });
 
     // Then update the work order state directly without using onRegister
@@ -1013,21 +1004,14 @@ const onFinish = async (item) => {
     if (updateResponse === undefined) {
       throw new Error('상태 업데이트에 실패했습니다.');
     }
-    const { showSuccess, showError } = useToast();
-    showSuccess('공정표가 발행되었습니다.', {
-      timeout: 3000,
-      position: "top-center",
-      icon: true,
-      closeButton: false
-    });
+
     // 데이터 새로고침 및 UI 업데이트
     await fetchData();
-    showWondan.value = false;
+    showWondan.value = true;
 
   } catch (error) {
     console.error('처리 중 오류 발생:', error);
-    const { showError } = useToast();
-    showError(error.message || '처리 중 오류가 발생했습니다.');
+    alert(error.message || '처리 중 오류가 발생했습니다.');
   }
 };
 
