@@ -104,7 +104,9 @@
           <li class="borderbox">
             <a class="nav-link text-white" @click="toggleMenu('menu12')" href="#">기초정보</a>
             <ul class="menu" v-show="isMenuVisible('menu12')"> <!-- 대메뉴2 하위 메뉴 보이기 -->
-              <li><NuxtLink to="/master/wondan">원단관리</NuxtLink></li>
+              <li><NuxtLink to="/master/wondan">원단코드관리</NuxtLink></li>
+              <li><NuxtLink to="/master/products">제품코드관리</NuxtLink></li>
+              <li><NuxtLink to="/master/workingPart">작업코드관리</NuxtLink></li>
             
               
             </ul>
@@ -179,7 +181,7 @@ const isMenuVisible = (menu) => {
   return menuVisibility.value[menu]; // 메뉴 가시성 반환
 }
 
-const isSidebarActive = ref(false)
+const isSidebarActive = ref(true)
 
 const toggleSidebar = () => {
   isSidebarActive.value = !isSidebarActive.value
