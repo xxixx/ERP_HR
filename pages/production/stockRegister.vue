@@ -142,47 +142,12 @@
         </table>
       </div>
       <!-- paging -->
-      <div class="pages d-flex justify-content-center">
-        <ul class="pagination pages">
-          <li>
-            <a
-              href="#"
-              class="back"
-              :class="{ disabled: currentPage === 1 }"
-              @click="prevPage"
-              aria-label="Previous"
-            >
-              <span aria-hidden="true" class="fa fa-arrow-circle-left"></span>
-              Prev</a
-            >
-          </li>
-          <li
-            class="page-item d-inline"
-            v-for="page in totalPages"
-            :key="page"
-            :class="{ active: currentPage === page }"
-          >
-            <a
-              href="#"
-              class="page page-item"
-              :class="{ active: currentPage === page }"
-              @click="goToPage(page)"
-              >{{ page }}</a
-            >
-          </li>
-          <li class="page-item d-inline">
-            <a
-              href="#"
-              class="next"
-              :class="{ disabled: currentPage === totalPages }"
-              @click="nextPage"
-              aria-label="Next"
-            >
-              <span aria-hidden="true" class="fa fa-arrow-circle-right"></span
-              >Next</a
-            >
-          </li>
-        </ul>
+      <div class="mt-3" v-if="totalItems > 0">
+        <Pagination 
+          :totalItems="totalItems"
+          :itemsPerPage="itemsPerPage"
+          v-model:currentPage="currentPage"
+        />
       </div>
       <!-- paging -->
     </div>
@@ -193,10 +158,10 @@
 
 
 <script lang="ts" setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, watch } from "vue";
 import * as XLSX from 'xlsx';
 import StockCharts from '@/components/StockCharts.vue';
-
+import Pagination from '~/components/common/Pagination.vue';
 
 import { useAccountStore } from "~/store/account";
 
@@ -379,31 +344,19 @@ URL.revokeObjectURL(url);
 };
 
 // 페이징 기능 구현
-const itemsPerPage = 10; // 한 페이지당 아이템 수
-let currentPage = ref(1); // 현재 페이지
-const totalPages = computed(() => Math.ceil(filteredData.value.length / itemsPerPage)); // 전체 페이지 수
-const prevPage = () => {
-if (currentPage.value > 1) {
-  currentPage.value--;
-}
-};
-
-const nextPage = () => {
-if (currentPage.value < totalPages.value) {
-  currentPage.value++;
-}
-};
-
-const goToPage = (page) => {
-if (page >= 1 && page <= totalPages.value) {
-  currentPage.value = page;
-}
-};
+const itemsPerPage = ref(10); // 한 페이지당 아이템 수
+const currentPage = ref(1); // 현재 페이지
+const totalItems = computed(() => filteredData.value.length); // 전체 아이템 수
 
 // 현재 페이지에 따라 표시할 아이템 범위 계산
-const startIndex = computed(() => (currentPage.value - 1) * itemsPerPage);
-const endIndex = computed(() => Math.min(startIndex.value + itemsPerPage, filteredData.value.length));
+const startIndex = computed(() => (currentPage.value - 1) * itemsPerPage.value);
+const endIndex = computed(() => Math.min(startIndex.value + itemsPerPage.value, filteredData.value.length));
 const pagedData = computed(() => filteredData.value.slice(startIndex.value, endIndex.value));
+
+// 페이지 변경 시 처리
+watch(currentPage, () => {
+  // 필요한 경우 여기에 추가 로직
+});
 
 // 컴포넌트가 마운트될 때 초기 데이터 가져오기
 onMounted(() => {

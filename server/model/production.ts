@@ -273,6 +273,7 @@ export const getProcessStateRecord = async () => {
         wpp.ProductCode,
         wpp.PRODUCT_BARCODE,
         wpp.PRODUCT_CODE,
+        wpp.BOX_COUNT,
         COUNT(DISTINCT sb.NO) as SCANNED_COUNT,
         COALESCE(bc.BARCODE_COUNT, 0) as PRINT_BARCODE_COUNT
       FROM

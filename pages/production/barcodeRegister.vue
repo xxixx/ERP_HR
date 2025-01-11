@@ -296,6 +296,8 @@ const onBarcodeRegister = async (item: ProductionModel) => {
     query: { processCode: PROCESS_CODE,
        productCode: item.ProductCode, 
        PRODUCT_CODE: item.PRODUCT_CODE,
+       COUNT: item.COUNT,
+       BOX_COUNT: item.BOX_COUNT,
        PRODUCT_FULLNAME: item.PRODUCT_FULLNAME },
   });
 };

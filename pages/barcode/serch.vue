@@ -14,7 +14,7 @@
             <option value="exact">정확히 일치</option>
             <option value="partial">부분 일치</option>
           </select>
-          <button class="btn btn-primary" @click="handleSearch">검색</button>
+          <button class="btn btn-warning text-white" @click="handleSearch">검색</button>
           <button class="btn btn-secondary" @click="refreshData">
             <i class="bi bi-arrow-clockwise"></i> 새로고침
           </button>
@@ -163,7 +163,7 @@ const refreshData = () => {
   results.value = []
   hasSearched.value = false
   currentPage.value = 1
-  handleSearch()
+//   handleSearch()
 }
 
 // 컴포넌트 마운트 시 초기 검색

@@ -1,13 +1,13 @@
 <template>
   <div>
     <div class="container mt-4 main-container">
-      production {{ production }}
-      processCode{{ processCode }}
+      <!-- production {{ production }} -->
+      <!-- processCode{{ processCode }} -->
      
-      routQuery{{ routQuery }}
-      <hr>
-      BarcodeCount{{ BarcodeCount }}
-      <h4 class="text-center">Barcode Scanner</h4>
+      <!-- routQuery{{ routQuery }} -->
+      <!-- <hr> -->
+      <!-- BarcodeCount{{ BarcodeCount }} -->
+      <h4 class="text-center">Barcode 등록</h4>
       <div class="row"></div>
       <div class="row">
         <div class="col">
@@ -30,10 +30,10 @@
             class="mb-3 d-flex align-items-center flex-fill me-3"
             style="text-align: left"
           >
-            <span style="width: 200px">재단수량</span>
+            <span style="width: 200px">계획수량</span>
             <input
               class="form-control"
-              v-model="production.COUNT"
+              v-model="COUNT"
               type="text"
               placeholder=""
               name=""
@@ -43,7 +43,7 @@
             class="mb-3 d-flex align-items-center flex-fill"
             style="text-align: left"
           >
-            <spanp style="width: 200px">출력한바코드수</spanp>
+            <spanp style="width: 200px">출력한바코드 수</spanp>
             <input
               class="form-control"
               v-model="production.LAST_SERIAL_NUMBER2"
@@ -65,7 +65,7 @@
               name=""
             />
           </div>
-          <div
+          <!-- <div
             class="mb-3 d-flex align-items-center flex-fill"
             style="text-align: left"
           >
@@ -77,36 +77,36 @@
               placeholder=""
               name=""
             />
-          </div>
+          </div> -->
         </div>
       </div>
       <hr />
       <div class="row">
         <div class="col d-flex">
-          <div
-            class="mb-3 d-flex align-items-center flex-fill me-3"
-            style="text-align: left"
-          >
+          <div class="mb-3 d-flex align-items-center flex-fill me-3" style="height: 120px;">
             <span style="width: 200px">박스수량</span>
             <input
-              class="form-control"
+              class="form-control text-center fw-bold h-100"
               v-model.number="quantity"
               type="number"
               min="1"
+              style="font-size: 4.5rem !important;"
             />
           </div>
-          <div
-            class="mb-3 d-flex align-items-center flex-fill"
-            style="text-align: left"
-          >
+          <div class="mb-3 d-flex align-items-center flex-fill" style="height: 120px;">
             <button
-              class="btn btn-warning btn-sm"
+              class="btn btn-warning w-100 h-100 text-white"
               @click="startScanning"
               :disabled="isScanning"
             >
-              Start Scanning
+
+              <p class="m-0">Start Scanning</p>
             </button>
-           
+          </div>
+        </div>
+        <div class="col">
+          <div class="mb-3 d-flex align-items-center justify-content-center flex-fill border" style="height: 120px;">
+            <h1 class="display-1 m-0">{{ scannedBarcodes.length }}</h1>
           </div>
         </div>
       </div>
@@ -344,9 +344,11 @@ const router = useRouter();
 const processCode = ref(route.query.processCode || "");
 const ProductCode = ref(route.query.ProductCode || "");
 const PRODUCT_CODE = ref(route.query.PRODUCT_CODE || "");
+const BOXCOUNTER = ref(route.query.BOXCOUNTER || "");
+const COUNT = ref(route.query.COUNT || "");
 const routQuery = ref(route.query);
 const production = ref("");
-const quantity = ref(0);
+const quantity = ref(route.query.BOX_COUNT || "");
 const scannedBarcode = ref("");
 const scannedBarcodes = ref([]);
 const ScannedBarcodecount = ref('');
@@ -740,7 +742,7 @@ onMounted(async () => {
 </script>
 <style scoped>
 .main-container {
-  max-width: 700px;
-  padding: 100px, 0;
+  /* max-width: 700px; */
+  /* padding: 100px, 0; */
 }
 </style>
